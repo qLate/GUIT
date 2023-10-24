@@ -1,0 +1,7 @@
+*.o
+*.bin
+hello_wayland
+.vs/
+.idea/
+cmake-build-debug/
+out/
