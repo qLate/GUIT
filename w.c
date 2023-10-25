@@ -12,7 +12,6 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-#include <wayland-client.h>
 #include "xdg-shell-client-protocol.h"
 #include <stdlib.h>
 #include <stdint.h>
@@ -53,7 +52,6 @@ int32_t alc_shm(uint64_t sz)
 	int32_t fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR | S_IWOTH | S_IROTH);
 	shm_unlink(name);
 	ftruncate(fd, sz);
-
 	return fd;
 }
 
@@ -163,11 +161,8 @@ struct xdg_wm_base_listener sh_list = {
 };
 
 void kb_map(void* data, struct wl_keyboard* kb, uint32_t frmt, int32_t fd, uint32_t sz) {}
-
 void kb_enter(void* data, struct wl_keyboard* kb, uint32_t ser, struct wl_surface* srfc, struct wl_array* keys) {}
-
 void kb_leave(void* data, struct wl_keyboard* kb, uint32_t ser, struct wl_surface* srfc) {}
-
 void kb_key(void* data, struct wl_keyboard* kb, uint32_t ser, uint32_t t, uint32_t key, uint32_t stat)
 {
 	if (key == 1)
@@ -183,9 +178,7 @@ void kb_key(void* data, struct wl_keyboard* kb, uint32_t ser, uint32_t t, uint32
 		printf("d\n");
 	}
 }
-
 void kb_mod(void* data, struct wl_keyboard* kb, uint32_t ser, uint32_t dep, uint32_t lat, uint32_t lock, uint32_t grp) {}
-
 void kb_rep(void* data, struct wl_keyboard* kb, int32_t rate, int32_t del) {}
 
 struct wl_keyboard_listener kb_list = {

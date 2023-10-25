@@ -1,3 +1,0 @@
-/mnt/hgfs/C/Users/Oleg/Documents/Programming/OS/hello_wayland/CMakeFiles/HelloWorld.dir
-/mnt/hgfs/C/Users/Oleg/Documents/Programming/OS/hello_wayland/CMakeFiles/edit_cache.dir
-/mnt/hgfs/C/Users/Oleg/Documents/Programming/OS/hello_wayland/CMakeFiles/rebuild_cache.dir
