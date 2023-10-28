@@ -11,7 +11,7 @@
 #include "utils.h"
 #include "xdg-shell-client-protocol.h"
 
-void Window::draw() const
+void Window::updateSurface() const
 {
 	wl_surface_attach(surf, buf, 0, 0);
 	wl_surface_damage_buffer(surf, 0, 0, w, h);
@@ -71,7 +71,7 @@ void Window::resize(int w_, int h_)
 	pixels = (uint8_t*)(mmap(0, w * h * 4, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0));
 
 	wl_shm_pool* pool = wl_shm_create_pool(GUIToolkit::instance->sharedMemory, fd, w * h * 4);
-	buf = wl_shm_pool_create_buffer(pool, 0, w, h, w * 4, WL_SHM_FORMAT_ARGB8888);
+	buf = wl_shm_pool_create_buffer(pool, 0, w, h, w * 4, WL_SHM_FORMAT_ABGR8888);
 	wl_shm_pool_destroy(pool);
 	close(fd);
 

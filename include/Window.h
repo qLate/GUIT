@@ -9,12 +9,6 @@
 
 class Window
 {
-	int w = 0, h = 0;
-	int x = 0, y = 0;
-	int dx = 0, dy = 0;
-	uint8_t* pixels = nullptr;
-	bool isClosed = false;
-
 	WindowListeners listeners {};
 
 	wl_surface* surf = nullptr;
@@ -23,10 +17,14 @@ class Window
 	xdg_toplevel* top = nullptr;
 	xdg_surface* xSurf = nullptr;
 
-
-	void draw() const;
+	void updateSurface() const;
 
 public:
+	int w = 0, h = 0;
+	uint8_t* pixels = nullptr;
+	int x = 0, y = 0;
+	bool isClosed = false;
+
 	Window(const std::string& name, int w, int h);
 	~Window();
 

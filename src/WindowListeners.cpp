@@ -9,7 +9,7 @@ void WindowListeners::configureXSurf(void* data, xdg_surface* xSurf, uint32_t se
 	xdg_surface_ack_configure(xSurf, serial);
 
 	auto window = (Window*)data;
-	window->draw();
+	window->updateSurface();
 }
 
 void WindowListeners::configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h_, wl_array* stat)
@@ -36,7 +36,7 @@ void WindowListeners::frameNew(void* data, wl_callback* cb, uint32_t a)
 	cb = wl_surface_frame(window->surf);
 	wl_callback_add_listener(cb, &window->listeners.callbackListener, window);
 
-	window->draw();
+	window->updateSurface();
 }
 
 void WindowListeners::onSurfaceEnter(void* data, wl_surface* surface, wl_output* output)
