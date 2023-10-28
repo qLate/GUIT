@@ -1,11 +1,13 @@
 #include <string.h>
 
 #include "GUIToolkit.h"
-#include "Window.h"
+#include "Component.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "filesystem"
+#include "Subcomponent.h"
+#include "Window.h"
 
 bool readImage(std::vector<uint8_t>& image, const std::filesystem::path& filename, int& w, int& h)
 {
@@ -22,18 +24,18 @@ int main()
 {
 	GUIToolkit toolkit {};
 
-	Window w1 {"Test window", 512, 512};
-	w1.fillColor(Color::red());
-	Window w2 {"Test window 2", 512, 512};
-	w2.fillColor(Color::blue());
-
 	std::vector<uint8_t> image;
 	int w, h;
 	readImage(image, "../images/sviat.jpg", w, h);
-	w1.resize(w, h);
+
+	Window w1 {"Test window", {w, h}};
 	memcpy(w1.pixels, image.data(), image.size());
 
-	toolkit.loop();
+	SubComponent subComponent {&w1, {w / 2, h / 2}, {0, 0}, {40, 40}};
+	subComponent.isWindowMoveable = true;
+	subComponent.fillColor(Color::blue());
+	memcpy(subComponent.pixels, image.data(), image.size() / 4);
 
+	toolkit.loop();
 	return 0;
 }

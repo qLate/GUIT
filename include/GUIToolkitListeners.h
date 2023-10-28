@@ -39,7 +39,7 @@ class GUIToolkitListeners
 	};
 
 
-	static void registerGlobal(void* data, wl_registry* reg, uint32_t name, const char* intf, uint32_t v);
+	static void registerGlobal(void* data, wl_registry* reg, uint32_t name, const char* interface, uint32_t version);
 	static void registerGlobalRemove(void* data, wl_registry* reg, uint32_t name);
 
 	static void seatCap(void* data, wl_seat* seat, uint32_t cap);

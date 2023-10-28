@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Component.h"
 #include "Window.h"
 
 GUIToolkit::GUIToolkit()
@@ -9,7 +10,7 @@ GUIToolkit::GUIToolkit()
 	if (instance != nullptr) std::cerr << "Multiple GUIToolkit instances detected. More then 1 instance can break the behaviour.";
 	instance = this;
 
-	display = wl_display_connect(0);
+	display = wl_display_connect(nullptr);
 	wl_registry* registry = wl_display_get_registry(display);
 	wl_registry_add_listener(registry, &listeners.registryListener, this);
 	wl_display_roundtrip(display);
@@ -22,7 +23,7 @@ GUIToolkit::~GUIToolkit()
 
 	for (const auto& window : windows)
 	{
-		window->wClose();
+		window->destroy();
 	}
 }
 
