@@ -31,10 +31,10 @@ int main()
 	Window w1 {"Test window", {w, h}};
 	memcpy(w1.pixels, image.data(), image.size());
 
-	SubComponent subComponent {&w1, {w / 2, h / 2}};
-	subComponent.isWindowMoveable = true;
-	subComponent.fillColor(Color::blue());
-	memcpy(subComponent.pixels, image.data(), image.size() / 4);
+	SubComponent s1 {&w1, {w, h / 4}};
+	s1.isWindowMoveable = true;
+	s1.setAnchors({0, 0.5f}, {1, 0.5f});
+	s1.fillColor(Color::blue());
 
 	toolkit.loop();
 	return 0;

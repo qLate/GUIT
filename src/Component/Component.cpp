@@ -9,8 +9,6 @@
 #include "GUIToolkit.h"
 #include "Subcomponent.h"
 #include "utils.h"
-#include "xdg-shell-client-protocol.h"
-
 
 
 Component::Component(glm::vec2 size)
