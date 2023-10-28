@@ -31,7 +31,7 @@ int main()
 	Window w1 {"Test window", {w, h}};
 	memcpy(w1.pixels, image.data(), image.size());
 
-	SubComponent subComponent {&w1, {w / 2, h / 2}, {0, 0}, {40, 40}};
+	SubComponent subComponent {&w1, {w / 2, h / 2}};
 	subComponent.isWindowMoveable = true;
 	subComponent.fillColor(Color::blue());
 	memcpy(subComponent.pixels, image.data(), image.size() / 4);

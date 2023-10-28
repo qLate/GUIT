@@ -27,7 +27,6 @@ void Window::destroy()
 	xdg_surface_destroy(xSurf);
 }
 
-
 void Window::configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial)
 {
 	auto window = (Window*)data;
@@ -41,7 +40,7 @@ void Window::configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h
 
 	auto window = (Window*)data;
 	if ((int)window->size.x != w_ || (int)window->size.y != h_)
-		window->resize({w_, h_});
+		window->resizeSurface({w_, h_});
 }
 void Window::closeTop(void* data, xdg_toplevel* top)
 {

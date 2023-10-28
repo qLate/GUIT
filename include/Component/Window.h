@@ -26,7 +26,6 @@ public:
 	static void configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial);
 	static void configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h_, wl_array* stat);
 	static void closeTop(void* data, xdg_toplevel* top);
-
 	void onSurfaceEnter(wl_surface* surface, wl_output* output) override;
 	void onSurfaceLeave(wl_surface* surface, wl_output* output) override;
 

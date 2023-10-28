@@ -7,25 +7,11 @@
 #include <sys/mman.h>
 
 #include "GUIToolkit.h"
+#include "Subcomponent.h"
 #include "utils.h"
 #include "xdg-shell-client-protocol.h"
 
 
-void Component::update() const
-{
-	wl_surface_attach(surf, buf, 0, 0);
-	wl_surface_damage_buffer(surf, 0, 0, x, y);
-	wl_surface_commit(surf);
-}
-
-void Component::destroy()
-{
-	if (isDestroyed) return;
-	isDestroyed = true;
-
-	wl_surface_destroy(surf);
-	wl_buffer_destroy(buf);
-}
 
 Component::Component(glm::vec2 size)
 {
@@ -38,21 +24,26 @@ Component::Component(glm::vec2 size)
 
 	wl_surface_commit(surf);
 
-	resize(size);
+	resizeSurface(size);
 }
 Component::~Component()
 {
 	destroy();
 }
 
-void Component::resize(glm::vec2 size)
+void Component::update() const
+{
+	wl_surface_attach(surf, buf, 0, 0);
+	wl_surface_damage_buffer(surf, 0, 0, x, y);
+	wl_surface_commit(surf);
+}
+
+void Component::resizeSurface(glm::vec2 size)
 {
 	if (this->size == size) return;
 
 	if (this->size.x != 0 && this->size.y != 0)
 		munmap(pixels, this->size.x * this->size.y * 4);
-
-	this->size = size;
 
 	int w = size.x;
 	int h = size.y;
@@ -65,14 +56,25 @@ void Component::resize(glm::vec2 size)
 	close(fd);
 
 	// Paint
-	memset(pixels, 255, w * h * 4);
+	memset(pixels, rand() % 255, w * h * 4);
 
-	for (int i = 0; i < w * h * 4; ++i)
+	for (const auto& subComponent : subComponents)
 	{
-		if (i % 4 != 3)
-			pixels[i] = rand();
+		subComponent->resize(this->size, size);
 	}
+
+	this->size = size;
 }
+
+void Component::destroy()
+{
+	if (isDestroyed) return;
+	isDestroyed = true;
+
+	wl_surface_destroy(surf);
+	wl_buffer_destroy(buf);
+}
+
 void Component::fillColor(Color color) const
 {
 	for (int i = 0; i < size.x * size.y * 4; ++i)

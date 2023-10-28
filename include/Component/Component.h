@@ -1,9 +1,12 @@
 #pragma once
 
+#include <vector>
+
 #include "wayland-client.h"
 #include "Color.h"
 #include "vec2.hpp"
 
+class SubComponent;
 class Window;
 
 class Component
@@ -20,6 +23,8 @@ protected:
 	bool isDestroyed = false;
 
 public:
+	std::vector<SubComponent*> subComponents {};
+
 	wl_surface* surf = nullptr;
 	wl_callback* surfCallback = nullptr;
 	wl_buffer* buf = nullptr;
@@ -36,7 +41,7 @@ public:
 	virtual ~Component();
 
 	void update() const;
-	void resize(glm::vec2 size);
+	void resizeSurface(glm::vec2 size);
 
 	void fillColor(Color color) const;
 
