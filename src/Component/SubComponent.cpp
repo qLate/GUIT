@@ -7,7 +7,9 @@ SubComponent::SubComponent(Component* parent, glm::vec2 size): Component(size), 
 {
 	this->window = parent->window;
 
-	subSurface = wl_subcompositor_get_subsurface(GUIToolkit::instance->subcompositor, surf, parent->surf);
+	resizeSurface(size);
+
+	subsurf = wl_subcompositor_get_subsurface(GUIToolkit::subcompositor, surf, parent->surf);
 	setAnchoredPos({0, 0});
 
 	parent->subComponents.push_back(this);
@@ -43,9 +45,13 @@ void SubComponent::setPivot(glm::vec2 pivot)
 void SubComponent::updateSurfacePosition() const
 {
 	auto pivotedPos = pos - pivot * size;
-	wl_subsurface_set_position(subSurface, pivotedPos.x, pivotedPos.y);
+	wl_subsurface_set_position(subsurf, pivotedPos.x, pivotedPos.y);
 }
 
+void SubComponent::resizeSurface(glm::vec2 size)
+{
+	Component::resizeSurface(size);
+}
 void SubComponent::resize(glm::vec2 prevContainerSize, glm::vec2 newContainerSize)
 {
 	glm::vec2 factor = (newContainerSize - prevContainerSize) / prevContainerSize * (anchorsMax - anchorsMin);

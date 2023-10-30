@@ -5,7 +5,7 @@ class Window;
 
 class SubComponent : public Component
 {
-	wl_subsurface* subSurface = nullptr;
+	wl_subsurface* subsurf = nullptr;
 
 public:
 	Component* parent;
@@ -24,6 +24,7 @@ public:
 	void setPivot(glm::vec2 pivot);
 	void updateSurfacePosition() const;
 
+	void resizeSurface(glm::vec2 size) final;
 	void resize(glm::vec2 prevContainerSize, glm::vec2 newContainerSize);
 
 	glm::vec2 getAnchorCenter() const;

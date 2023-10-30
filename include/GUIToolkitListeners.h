@@ -24,7 +24,7 @@ class GUIToolkitListeners
 	wl_pointer_listener pointerListener = {
 		.enter = pointerEnter,
 		.leave = pointerExit,
-		.motion = [](void*, struct wl_pointer*, uint32_t, wl_fixed_t, wl_fixed_t) {},
+		.motion = pointerMove,
 		.button = pointerButton,
 		.axis = [](void*, struct wl_pointer*, uint32_t, uint32_t, wl_fixed_t) {},
 	};
@@ -47,7 +47,8 @@ class GUIToolkitListeners
 
 	static void keyboardKey(void* data, wl_keyboard* kb, uint32_t ser, uint32_t t, uint32_t key, uint32_t stat);
 	static void pointerButton(void* data, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state);
-	static void pointerEnter(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t yInt32);
+	static void pointerMove(void* data, wl_pointer* pointer, uint32_t time, wl_fixed_t surface_x, wl_fixed_t surface_y);
+	static void pointerEnter(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
 	static void pointerExit(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface);
 
 	friend GUIToolkit;

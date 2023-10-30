@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include "wayland-client.h"
@@ -15,12 +16,16 @@ protected:
 	wl_callback_listener callbackListener {
 		.done = frameNew
 	};
-	wl_surface_listener surfaceListener = {
+	wl_surface_listener surfListener = {
 		.enter = onSurfaceEnterCallback,
 		.leave = onSurfaceLeaveCallback,
 	};
 
 	bool isDestroyed = false;
+	uint8_t* pixels = nullptr;
+
+	glm::vec2 imageSize {1, 1};
+	std::vector<uint8_t> imageData {255, 255, 255, 255};
 
 public:
 	std::vector<SubComponent*> subComponents {};
@@ -30,20 +35,21 @@ public:
 	wl_buffer* buf = nullptr;
 
 	glm::vec2 size;
-	uint8_t* pixels = nullptr;
 	int x = 0, y = 0;
 
 	Window* window;
-	bool isWindowMoveable;
-
+	bool doMoveWindow;
 
 	Component(glm::vec2 size);
 	virtual ~Component();
 
-	void update() const;
-	void resizeSurface(glm::vec2 size);
+	virtual void update() const;
 
-	void fillColor(Color color) const;
+	virtual void resizeSurface(glm::vec2 size);
+	static void scaleContent(const uint8_t* oldPixels, glm::vec2 oldSize, uint8_t* newPixels, glm::vec2 newSize);
+
+	void setColor(Color color) const;
+	void setImage(const std::string& path);
 
 	virtual void destroy();
 
