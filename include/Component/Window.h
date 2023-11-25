@@ -43,7 +43,6 @@ public:
 
 	void resize(glm::vec2 size) final;
 	void update() const override;
-	void destroy() final;
 
 	static void configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial);
 	static void configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h_, wl_array* stat);

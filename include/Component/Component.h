@@ -21,7 +21,6 @@ protected:
 		.leave = onSurfaceLeaveCallback,
 	};
 
-	bool isDestroyed = false;
 	uint8_t* pixels = nullptr;
 
 	glm::vec2 imageSize {1, 1};
@@ -40,18 +39,16 @@ public:
 	Window* window;
 	bool moveWindowOnDrag;
 
-	Component(glm::vec2 size);
+	Component();
 	virtual ~Component();
 
 	virtual void update() const;
 
 	virtual void resize(glm::vec2 size);
-	static void scaleContent(const uint8_t* oldPixels, glm::vec2 oldSize, uint8_t* newPixels, glm::vec2 newSize);
+	void scaleContent(glm::vec2 size) const;
 
 	void setColor(Color color);
 	void setImage(const std::string& path);
-
-	virtual void destroy();
 
 	virtual void onSurfaceEnter(wl_surface* surface, wl_output* output) {}
 	virtual void onSurfaceLeave(wl_surface* surface, wl_output* output) {}

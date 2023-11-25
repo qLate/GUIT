@@ -24,7 +24,6 @@ public:
 	void setPivot(glm::vec2 pivot);
 	void updateSurfacePosition() const;
 
-	void resize(glm::vec2 size) final;
 	void resizeRec(glm::vec2 prevContainerSize, glm::vec2 newContainerSize);
 
 	glm::vec2 getAnchorCenter() const;

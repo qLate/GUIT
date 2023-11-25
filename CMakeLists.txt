@@ -2,7 +2,7 @@
 project ("GUIToolkit")
 set(CMAKE_CXX_STANDARD 20)
 
-set(SOURCE_FILES "src/Component/Component.cpp" "src/xdg-shell-protocol.c" "src/main.cpp" "src/GUIToolkit.cpp" "src/GUIToolkitListeners.cpp"  "include/Action.h" "src/Component/Window.cpp" "src/Component/Subcomponent.cpp"  "src/Utils.cpp")
+set(SOURCE_FILES "src/Component/Component.cpp" "src/xdg-shell-protocol.c" "src/main.cpp" "src/GUIToolkit.cpp" "src/GUIToolkitListeners.cpp"  "include/Action.h" "src/Component/Window.cpp" "src/Component/SubComponent.cpp")
 
 include_directories(libs/glm libs/glm/glm include include/Component libs)
 

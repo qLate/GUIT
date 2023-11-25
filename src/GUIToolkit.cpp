@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "Component.h"
 #include "Window.h"
 
 GUIToolkit::GUIToolkit()
@@ -30,11 +29,6 @@ GUIToolkit::~GUIToolkit()
 	if (keyboard) wl_keyboard_destroy(keyboard);
 	wl_seat_release(seat);
 	wl_display_disconnect(display);
-
-	for (const auto& window : windows)
-	{
-		window->destroy();
-	}
 }
 
 void GUIToolkit::loop() const

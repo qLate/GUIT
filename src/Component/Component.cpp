@@ -5,13 +5,14 @@
 #include <unistd.h>
 #include <wayland-client-protocol.h>
 #include <sys/mman.h>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GUIToolkit.h"
 #include "Subcomponent.h"
 #include "Utils.h"
 
 
-Component::Component(glm::vec2 size)
+Component::Component()
 {
 	surf = wl_compositor_create_surface(GUIToolkit::compositor);
 	wl_surface_set_user_data(surf, this);
@@ -23,39 +24,44 @@ Component::Component(glm::vec2 size)
 }
 Component::~Component()
 {
-	destroy();
+	wl_surface_destroy(surf);
+	wl_buffer_destroy(buf);
 }
 
 void Component::update() const
 {
 	wl_surface_damage_buffer(surf, 0, 0, x, y);
 	wl_surface_commit(surf);
+
+	for (auto subComponent : subComponents)
+	{
+		subComponent->update();
+	}
 }
 
 void Component::resize(glm::vec2 size)
 {
 	if (this->size == size) return;
 
-	int len = this->size.x * this->size.y * 4;
+	int len = (int)this->size.x * (int)this->size.y * 4;
 	if (len != 0)
 	{
 		munmap(pixels, len);
 		wl_buffer_destroy(buf);
 	}
 
-	int w = size.x;
-	int h = size.y;
-	int32_t fd = Utils::shm_alloc(w * h * 4);
-	pixels = (uint8_t*)mmap(nullptr, w * h * 4, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	int len_new = (int)size.x * (int)size.y * 4;
+	int32_t fd = Utils::shm_alloc(len_new);
+	pixels = (uint8_t*)mmap(nullptr, len_new, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
-	wl_shm_pool* pool = wl_shm_create_pool(GUIToolkit::sharedMemory, fd, w * h * 4);
-	buf = wl_shm_pool_create_buffer(pool, 0, w, h, w * 4, WL_SHM_FORMAT_ABGR8888);
+	wl_shm_pool* pool = wl_shm_create_pool(GUIToolkit::sharedMemory, fd, len_new);
+	buf = wl_shm_pool_create_buffer(pool, 0, (int)size.x, (int)size.y, (int)size.x * 4, WL_SHM_FORMAT_ABGR8888);
 	wl_surface_attach(surf, buf, 0, 0);
 	wl_shm_pool_destroy(pool);
 	close(fd);
 
 	if (this->size.x != 0 && this->size.y != 0)
-		scaleContent(imageData.data(), imageSize, pixels, size);
+		scaleContent(size);
 
 	for (const auto& subComponent : subComponents)
 	{
@@ -64,27 +70,23 @@ void Component::resize(glm::vec2 size)
 
 	this->size = size;
 }
-void Component::scaleContent(const uint8_t* oldPixels, glm::vec2 oldSize, uint8_t* newPixels, glm::vec2 newSize)
+void Component::scaleContent(glm::vec2 size) const
 {
-	auto factor = oldSize / newSize;
-	for (int y = 0; y < (int)newSize.y; ++y)
+	//memset(newPixels, 255, newSize.x * newSize.y * 4);
+	//return;
+
+	//auto data = imageData.data();
+	auto data = imageData.size() > 10 ? imageData : vector<uint8_t> {0, 0, 255, 255};
+	auto factor = imageSize / size;
+	for (int y = 0; y < (int)size.y; ++y)
 	{
-		for (int x = 0; x < (int)newSize.x; ++x)
+		for (int x = 0; x < (int)size.x; ++x)
 		{
-			int i = (y * newSize.x + x) * 4;
-			int old_i = (((int)(y * factor.y) * oldSize.x) + (int)(x * factor.x)) * 4;
-			memcpy(newPixels + i, oldPixels + old_i, 4);
+			int i = (y * (int)size.x + x) * 4;
+			int old_i = ((int)(y * factor.y) * (int)imageSize.x + (int)(x * factor.x)) * 4;
+			memcpy(pixels + i, data.data() + old_i, 4);
 		}
 	}
-}
-
-void Component::destroy()
-{
-	if (isDestroyed) return;
-	isDestroyed = true;
-
-	wl_surface_destroy(surf);
-	wl_buffer_destroy(buf);
 }
 
 void Component::setColor(Color color)
@@ -95,7 +97,7 @@ void Component::setColor(Color color)
 	imageData[0] = color.a * 255;
 	imageSize = {1, 1};
 
-	for (int i = 0; i < size.x * size.y * 4; ++i)
+	for (int i = 0; i < (int)size.x * (int)size.y * 4; ++i)
 	{
 		if (i % 4 == 0) pixels[i] = color.r * 255;
 		if (i % 4 == 1) pixels[i] = color.g * 255;
@@ -115,14 +117,13 @@ void Component::setImage(const std::string& path)
 
 void Component::frameNew(void* data, wl_callback* cb, uint32_t a)
 {
-	auto window = (Component*)data;
+	auto component = (Component*)data;
 
 	wl_callback_destroy(cb);
-	//if (window->isClosed) return;
-	cb = wl_surface_frame(window->surf);
-	wl_callback_add_listener(cb, &window->callbackListener, window);
+	cb = wl_surface_frame(component->surf);
+	wl_callback_add_listener(cb, &component->callbackListener, component);
 
-	window->update();
+	component->update();
 }
 void Component::onSurfaceEnterCallback(void* data, wl_surface* surface, wl_output* output)
 {

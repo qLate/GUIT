@@ -2,12 +2,13 @@
 
 #include "GUIToolkit.h"
 #include "Window.h"
+#include "vec2.hpp"
 
-SubComponent::SubComponent(Component* parent, glm::vec2 size): Component(size), parent(parent)
+SubComponent::SubComponent(Component* parent, glm::vec2 size): parent(parent)
 {
 	this->window = parent->window;
 
-	resize(size);
+	SubComponent::resize(size);
 
 	subsurf = wl_subcompositor_get_subsurface(GUIToolkit::subcompositor, surf, parent->surf);
 	setAnchoredPos({0, 0});
@@ -45,13 +46,9 @@ void SubComponent::setPivot(glm::vec2 pivot)
 void SubComponent::updateSurfacePosition() const
 {
 	auto pivotedPos = pos - pivot * size;
-	wl_subsurface_set_position(subsurf, pivotedPos.x, pivotedPos.y);
+	wl_subsurface_set_position(subsurf, (int)pivotedPos.x, (int)pivotedPos.y);
 }
 
-void SubComponent::resize(glm::vec2 size)
-{
-	Component::resize(size);
-}
 void SubComponent::resizeRec(glm::vec2 prevContainerSize, glm::vec2 newContainerSize)
 {
 	glm::vec2 factor = (newContainerSize - prevContainerSize) / prevContainerSize * (anchorsMax - anchorsMin);

@@ -7,7 +7,7 @@
 #include "GUIToolkit.h"
 #include "Utils.h"
 
-Window::Window(const std::string& name, glm::vec2 size) : Component(size)
+Window::Window(const std::string& name, glm::vec2 size)
 {
 	this->window = this;
 	this->moveWindowOnDrag = true;
@@ -36,6 +36,9 @@ Window::Window(const std::string& name, glm::vec2 size) : Component(size)
 Window::~Window()
 {
 	std::erase(GUIToolkit::windows, this);
+
+	xdg_toplevel_destroy(top);
+	xdg_surface_destroy(xSurf);
 }
 void Window::resize(glm::vec2 size)
 {
@@ -49,8 +52,8 @@ void Window::resize(glm::vec2 size)
 		wl_buffer_destroy(wBuf);
 	}
 
-	int w = size.x + 2 * border;
-	int h = size.y + 2 * border;
+	int w = (int)size.x + 2 * border;
+	int h = (int)size.y + 2 * border;
 	int32_t fd = Utils::shm_alloc(w * h * 4);
 	wPixels = (uint8_t*)mmap(nullptr, w * h * 4, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	//memset(wPixels, 0, w * h * 4);
@@ -74,13 +77,6 @@ void Window::update() const
 	wl_surface_damage_buffer(wSurf, 0, 0, size.x + 2 * GUIToolkit::windowResizeBorder, size.y + 2 * GUIToolkit::windowResizeBorder);
 	wl_surface_commit(wSurf);
 }
-void Window::destroy()
-{
-	Component::destroy();
-
-	xdg_toplevel_destroy(top);
-	xdg_surface_destroy(xSurf);
-}
 
 void Window::configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial)
 {
@@ -94,11 +90,7 @@ void Window::configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h
 	if (!w_ && !h_) return;
 
 	auto window = (Window*)data;
-	if ((int)window->size.x != w_ || (int)window->size.y != h_)
+	if (window->size.x != w_ || window->size.y != h_)
 		window->resize(glm::vec2(w_, h_) - glm::vec2(2 * GUIToolkit::windowResizeBorder, 2 * GUIToolkit::windowResizeBorder));
 }
-void Window::closeTop(void* data, xdg_toplevel* top)
-{
-	auto window = (Window*)data;
-	window->destroy();
-}
+void Window::closeTop(void* data, xdg_toplevel* top) {}
