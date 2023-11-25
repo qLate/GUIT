@@ -1,4 +1,4 @@
-#include "Subcomponent.h"
+#include "SubComponent.h"
 
 #include "GUIToolkit.h"
 #include "Window.h"

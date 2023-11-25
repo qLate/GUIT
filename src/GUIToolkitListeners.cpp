@@ -55,17 +55,14 @@ void GUIToolkitListeners::seatCap(void* data, wl_seat* seat, uint32_t cap)
 }
 void GUIToolkitListeners::seatName(void* data, wl_seat* seat, const char* name) {}
 
-void GUIToolkitListeners::keyboardKey(void* data, wl_keyboard* kb, uint32_t ser, uint32_t t, uint32_t key, uint32_t stat)
+void GUIToolkitListeners::keyboardKey(void* data, wl_keyboard* kb, uint32_t ser, uint32_t t, uint32_t key, uint32_t state)
 {
 	auto toolkit = (GUIToolkit*)data;
 	if (key == 1) toolkit->closeTrigger = true;
-	else if (key == 30)
+	else if (key == KEY_F)
 	{
-		std::cout << "a\n";
-	}
-	else if (key == 32)
-	{
-		std::cout << "d\n";
+		if (state == WL_KEYBOARD_KEY_STATE_PRESSED && GUIToolkit::focusedWindow != nullptr)
+			GUIToolkit::focusedWindow->switchFullscreen();
 	}
 }
 void GUIToolkitListeners::pointerButton(void* data, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)

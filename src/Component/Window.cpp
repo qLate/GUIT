@@ -49,8 +49,8 @@ void Window::resize(glm::vec2 size)
 	if (len != 0)
 		wl_buffer_destroy(wBuf);
 
-	int w = (int)size.x + 2 * border;
-	int h = (int)size.y + 2 * border;
+	int w = (int)size.x + (isFullscreen ? 0 : 2 * border);
+	int h = (int)size.y + (isFullscreen ? 0 : 2 * border);
 	int len_new = w * h * 4;
 	if (len_new > wPixelsCapacity || len_new < wPixelsCapacity / 3)
 	{
@@ -69,7 +69,7 @@ void Window::resize(glm::vec2 size)
 	wBuf = wl_shm_pool_create_buffer(wPixels_pool, 0, w, h, w * 4, WL_SHM_FORMAT_ABGR8888);
 	wl_surface_attach(wSurf, wBuf, 0, 0);
 
-	wl_subsurface_set_position(subsurf, border, border);
+	wl_subsurface_set_position(subsurf, isFullscreen ? 0 : border, isFullscreen ? 0 : border);
 
 	this->wSize = {w, h};
 
@@ -82,12 +82,22 @@ void Window::update() const
 	wl_surface_damage_buffer(wSurf, 0, 0, size.x + 2 * GUIToolkit::windowResizeBorder, size.y + 2 * GUIToolkit::windowResizeBorder);
 	wl_surface_commit(wSurf);
 }
+void Window::switchFullscreen()
+{
+	isFullscreen = !isFullscreen;
+
+	if (window->isFullscreen)
+		xdg_toplevel_set_fullscreen(window->top, nullptr);
+	else
+		xdg_toplevel_unset_fullscreen(window->top);
+}
 
 void Window::configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial)
 {
 	auto window = (Window*)data;
 	xdg_surface_ack_configure(xSurf, serial);
 
+	window->resize(window->size + (window->isFullscreen ? glm::vec2(GUIToolkit::windowResizeBorder * 2, GUIToolkit::windowResizeBorder * 2) : glm::vec2()));
 	window->update();
 }
 void Window::configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h_, wl_array* stat)

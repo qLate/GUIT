@@ -42,7 +42,6 @@ void Component::update() const
 void Component::resize(glm::vec2 size)
 {
 	if (this->size == size) return;
-
 	int len = (int)this->size.x * (int)this->size.y * 4;
 	if (len != 0)
 		wl_buffer_destroy(buf);
