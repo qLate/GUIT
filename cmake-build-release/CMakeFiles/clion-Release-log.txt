@@ -1,0 +1,49 @@
+/snap/clion/250/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=/snap/clion/250/bin/ninja/linux/x64/ninja -G Ninja -S /mnt/hgfs/C/Users/Oleg/Documents/Programming/OS/GUIToolkit -B /mnt/hgfs/C/Users/Oleg/Documents/Programming/OS/GUIToolkit/cmake-build-release
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Warning (dev) at /snap/clion/250/bin/cmake/linux/x64/share/cmake-3.26/Modules/FindPackageHandleStandardArgs.cmake:438 (message):
+  The package name passed to `find_package_handle_standard_args`
+  (WAYLAND_CLIENT) does not match the name of the calling package (Wayland).
+  This can lead to problems in calling code that expects `find_package`
+  result variables (e.g., `_FOUND`) to follow a certain pattern.
+Call Stack (most recent call first):
+  FindWayland.cmake:70 (find_package_handle_standard_args)
+  CMakeLists.txt:14 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found WAYLAND_CLIENT: /usr/lib/x86_64-linux-gnu/libwayland-client.so  
+CMake Warning (dev) at /snap/clion/250/bin/cmake/linux/x64/share/cmake-3.26/Modules/FindPackageHandleStandardArgs.cmake:438 (message):
+  The package name passed to `find_package_handle_standard_args`
+  (WAYLAND_SERVER) does not match the name of the calling package (Wayland).
+  This can lead to problems in calling code that expects `find_package`
+  result variables (e.g., `_FOUND`) to follow a certain pattern.
+Call Stack (most recent call first):
+  FindWayland.cmake:75 (find_package_handle_standard_args)
+  CMakeLists.txt:14 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found WAYLAND_SERVER: /usr/lib/x86_64-linux-gnu/libwayland-server.so  
+CMake Warning (dev) at /snap/clion/250/bin/cmake/linux/x64/share/cmake-3.26/Modules/FindPackageHandleStandardArgs.cmake:438 (message):
+  The package name passed to `find_package_handle_standard_args`
+  (WAYLAND_CURSOR) does not match the name of the calling package (Wayland).
+  This can lead to problems in calling code that expects `find_package`
+  result variables (e.g., `_FOUND`) to follow a certain pattern.
+Call Stack (most recent call first):
+  FindWayland.cmake:80 (find_package_handle_standard_args)
+  CMakeLists.txt:14 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found WAYLAND_CURSOR: /usr/lib/x86_64-linux-gnu/libwayland-cursor.so  
+-- Configuring done (4.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: /mnt/hgfs/C/Users/Oleg/Documents/Programming/OS/GUIToolkit/cmake-build-release

@@ -58,5 +58,7 @@ public:
 	static void frameNew(void* data, wl_callback* cb, uint32_t a);
 	static void onSurfaceEnterCallback(void* data, wl_surface* surface, wl_output* output);
 	static void onSurfaceLeaveCallback(void* data, wl_surface* surface, wl_output* output);
+
 	friend class GUIToolkitListeners;
+	friend class Utils;
 };

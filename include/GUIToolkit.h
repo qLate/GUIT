@@ -27,20 +27,26 @@ public:
 	inline static GUIToolkit* instance = nullptr;
 	inline static std::vector<Window*> windows {};
 
+	// Hovered and focused components
+	inline static Window* hoveredWindow = nullptr;
+	inline static Component* hoveredComponent = nullptr;
+	inline static wl_surface* hoveredSurface = nullptr;
 	inline static Window* focusedWindow = nullptr;
 	inline static Component* focusedComponent = nullptr;
-	inline static wl_surface* focusedSurface = nullptr;
 
+	// Mouse
 	inline static glm::vec2 mousePos;
 	inline static int resizeIndex;
 	inline static Action<glm::vec2> onPointerMove;
 	inline static uint32_t latestPointerEnterSerial;
 
+	// Wayland cursor
 	inline static wl_surface* cursorSurface;
 	inline static wl_subsurface* cursorSubsurface;
 	inline static wl_cursor_image* cursorImage;
 	inline static wl_cursor_theme* cursorTheme;
 
+	// Wayland
 	inline static wl_display* display = nullptr;
 	inline static wl_compositor* compositor = nullptr;
 	inline static wl_subcompositor* subcompositor = nullptr;

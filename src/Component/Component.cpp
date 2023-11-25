@@ -42,27 +42,8 @@ void Component::update() const
 void Component::resize(glm::vec2 size)
 {
 	if (this->size == size) return;
-	int len = (int)this->size.x * (int)this->size.y * 4;
-	if (len != 0)
-		wl_buffer_destroy(buf);
 
-	int len_new = (int)size.x * (int)size.y * 4;
-	if (len_new > pixelsCapacity || len_new < pixelsCapacity / 3)
-	{
-		if (pixels_pool != nullptr)
-		{
-			wl_shm_pool_destroy(pixels_pool);
-			munmap(pixels, pixelsCapacity);
-		}
-
-		pixelsCapacity = len_new * 2;
-		auto fd = Utils::shm_alloc(pixelsCapacity);
-		pixels = (uint8_t*)mmap(nullptr, pixelsCapacity, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-		pixels_pool = wl_shm_create_pool(GUIToolkit::sharedMemory, fd, pixelsCapacity);
-	}
-
-	buf = wl_shm_pool_create_buffer(pixels_pool, 0, (int)size.x, (int)size.y, (int)size.x * 4, WL_SHM_FORMAT_ABGR8888);
-	wl_surface_attach(surf, buf, 0, 0);
+	Utils::resizeSurface(this->size, size, pixelsCapacity, surf, buf, pixels, pixels_pool);
 
 	if (this->size.x != 0 && this->size.y != 0)
 		scaleContent(size);
@@ -76,11 +57,7 @@ void Component::resize(glm::vec2 size)
 }
 void Component::scaleContent(glm::vec2 size) const
 {
-	//memset(newPixels, 255, newSize.x * newSize.y * 4);
-	//return;
-
-	//auto data = imageData.data();
-	auto data = imageData.size() > 10 ? imageData : vector<uint8_t> {0, 0, 255, 255};
+	auto data = imageData.data();
 	auto factor = imageSize / size;
 	for (int y = 0; y < (int)size.y; ++y)
 	{
@@ -88,17 +65,18 @@ void Component::scaleContent(glm::vec2 size) const
 		{
 			int i = (y * (int)size.x + x) * 4;
 			int old_i = ((int)(y * factor.y) * (int)imageSize.x + (int)(x * factor.x)) * 4;
-			memcpy(pixels + i, data.data() + old_i, 4);
+			memcpy(pixels + i, data + old_i, 4);
 		}
 	}
 }
 
 void Component::setColor(Color color)
 {
+	imageData.resize(4);
 	imageData[0] = color.r * 255;
-	imageData[0] = color.g * 255;
-	imageData[0] = color.b * 255;
-	imageData[0] = color.a * 255;
+	imageData[1] = color.g * 255;
+	imageData[2] = color.b * 255;
+	imageData[3] = color.a * 255;
 	imageSize = {1, 1};
 
 	for (int i = 0; i < (int)size.x * (int)size.y * 4; ++i)

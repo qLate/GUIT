@@ -45,29 +45,9 @@ void Window::resize(glm::vec2 size)
 	int border = GUIToolkit::windowResizeBorder;
 	if (this->size == size) return;
 
-	int len = (this->wSize.x) * (this->wSize.y) * 4;
-	if (len != 0)
-		wl_buffer_destroy(wBuf);
-
 	int w = (int)size.x + (isFullscreen ? 0 : 2 * border);
 	int h = (int)size.y + (isFullscreen ? 0 : 2 * border);
-	int len_new = w * h * 4;
-	if (len_new > wPixelsCapacity || len_new < wPixelsCapacity / 3)
-	{
-		if (wPixels_pool != nullptr)
-		{
-			wl_shm_pool_destroy(wPixels_pool);
-			munmap(wPixels, wPixelsCapacity);
-		}
-
-		wPixelsCapacity = len_new * 2;
-		auto fd = Utils::shm_alloc(wPixelsCapacity);
-		wPixels = (uint8_t*)mmap(nullptr, wPixelsCapacity, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-		wPixels_pool = wl_shm_create_pool(GUIToolkit::sharedMemory, fd, wPixelsCapacity);
-	}
-
-	wBuf = wl_shm_pool_create_buffer(wPixels_pool, 0, w, h, w * 4, WL_SHM_FORMAT_ABGR8888);
-	wl_surface_attach(wSurf, wBuf, 0, 0);
+	Utils::resizeSurface(this->wSize, {w, h}, wPixelsCapacity, wSurf, wBuf, wPixels, wPixels_pool);
 
 	wl_subsurface_set_position(subsurf, isFullscreen ? 0 : border, isFullscreen ? 0 : border);
 

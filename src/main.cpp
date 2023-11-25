@@ -3,13 +3,12 @@
 
 #include "Window.h"
 
-#define  STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
 #include "SubComponent.h"
 
 int main()
 {
-	GUIToolkit toolkit {};
+    GUIToolkit toolkit {};
 
 	Window w1 {"Test window", {1, 1}};
 	w1.setImage("../images/sviat.jpg");
