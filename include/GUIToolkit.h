@@ -27,10 +27,12 @@ public:
 	inline static GUIToolkit* instance = nullptr;
 	inline static std::vector<Window*> windows {};
 
+	inline static Window* focusedWindow = nullptr;
 	inline static Component* focusedComponent = nullptr;
 	inline static wl_surface* focusedSurface = nullptr;
 
-	inline static glm::vec2 pointerPos;
+	inline static glm::vec2 mousePos;
+	inline static int resizeIndex;
 	inline static Action<glm::vec2> onPointerMove;
 	inline static uint32_t latestPointerEnterSerial;
 

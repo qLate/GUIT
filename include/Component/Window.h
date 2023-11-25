@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <wayland-cursor.h>
 
 #include "Component.h"
 #include "xdg-shell-client-protocol.h"
@@ -42,7 +41,7 @@ public:
 	Window(const std::string& name, glm::vec2 size);
 	~Window() override;
 
-	void resizeSurface(glm::vec2 size) final;
+	void resize(glm::vec2 size) final;
 	void update() const override;
 	void destroy() final;
 

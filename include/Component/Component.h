@@ -38,17 +38,17 @@ public:
 	int x = 0, y = 0;
 
 	Window* window;
-	bool doMoveWindow;
+	bool moveWindowOnDrag;
 
 	Component(glm::vec2 size);
 	virtual ~Component();
 
 	virtual void update() const;
 
-	virtual void resizeSurface(glm::vec2 size);
+	virtual void resize(glm::vec2 size);
 	static void scaleContent(const uint8_t* oldPixels, glm::vec2 oldSize, uint8_t* newPixels, glm::vec2 newSize);
 
-	void setColor(Color color) const;
+	void setColor(Color color);
 	void setImage(const std::string& path);
 
 	virtual void destroy();

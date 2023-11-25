@@ -8,7 +8,7 @@
 
 #include "GUIToolkit.h"
 #include "Subcomponent.h"
-#include "utils.h"
+#include "Utils.h"
 
 
 Component::Component(glm::vec2 size)
@@ -32,7 +32,7 @@ void Component::update() const
 	wl_surface_commit(surf);
 }
 
-void Component::resizeSurface(glm::vec2 size)
+void Component::resize(glm::vec2 size)
 {
 	if (this->size == size) return;
 
@@ -59,7 +59,7 @@ void Component::resizeSurface(glm::vec2 size)
 
 	for (const auto& subComponent : subComponents)
 	{
-		subComponent->resize(this->size, size);
+		subComponent->resizeRec(this->size, size);
 	}
 
 	this->size = size;
@@ -87,8 +87,14 @@ void Component::destroy()
 	wl_buffer_destroy(buf);
 }
 
-void Component::setColor(Color color) const
+void Component::setColor(Color color)
 {
+	imageData[0] = color.r * 255;
+	imageData[0] = color.g * 255;
+	imageData[0] = color.b * 255;
+	imageData[0] = color.a * 255;
+	imageSize = {1, 1};
+
 	for (int i = 0; i < size.x * size.y * 4; ++i)
 	{
 		if (i % 4 == 0) pixels[i] = color.r * 255;
@@ -101,7 +107,7 @@ void Component::setImage(const std::string& path)
 {
 	int w, h;
 	Utils::readImage(imageData, path, w, h);
-	resizeSurface({w, h});
+	resize({w, h});
 
 	imageSize = {w, h};
 	memcpy(pixels, imageData.data(), imageData.size());

@@ -5,12 +5,12 @@
 #include <sys/mman.h>
 
 #include "GUIToolkit.h"
-#include "utils.h"
+#include "Utils.h"
 
 Window::Window(const std::string& name, glm::vec2 size) : Component(size)
 {
 	this->window = this;
-	this->doMoveWindow = true;
+	this->moveWindowOnDrag = true;
 
 	wSurf = wl_compositor_create_surface(GUIToolkit::compositor);
 	wl_surface_set_user_data(wSurf, this);
@@ -31,13 +31,13 @@ Window::Window(const std::string& name, glm::vec2 size) : Component(size)
 
 	GUIToolkit::windows.push_back(this);
 
-	resizeSurface(size);
+	resize(size);
 }
 Window::~Window()
 {
 	std::erase(GUIToolkit::windows, this);
 }
-void Window::resizeSurface(glm::vec2 size)
+void Window::resize(glm::vec2 size)
 {
 	int border = GUIToolkit::windowResizeBorder;
 	if (this->size == size) return;
@@ -65,7 +65,7 @@ void Window::resizeSurface(glm::vec2 size)
 
 	this->wSize = {w, h};
 
-	Component::resizeSurface(size);
+	Component::resize(size);
 }
 void Window::update() const
 {
@@ -95,7 +95,7 @@ void Window::configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h
 
 	auto window = (Window*)data;
 	if ((int)window->size.x != w_ || (int)window->size.y != h_)
-		window->resizeSurface(glm::vec2(w_, h_) - glm::vec2(2 * GUIToolkit::windowResizeBorder, 2 * GUIToolkit::windowResizeBorder));
+		window->resize(glm::vec2(w_, h_) - glm::vec2(2 * GUIToolkit::windowResizeBorder, 2 * GUIToolkit::windowResizeBorder));
 }
 void Window::closeTop(void* data, xdg_toplevel* top)
 {

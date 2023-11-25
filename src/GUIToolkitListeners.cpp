@@ -9,6 +9,7 @@
 #include "GUIToolkit.h"
 #include "Window.h"
 
+
 void GUIToolkitListeners::registerGlobal(void* data, wl_registry* reg, uint32_t name, const char* interface, uint32_t version)
 {
 	auto toolkit = (GUIToolkit*)data;
@@ -71,86 +72,71 @@ void GUIToolkitListeners::pointerButton(void* data, wl_pointer* pointer, uint32_
 {
 	if (button == BTN_LEFT && state == WL_POINTER_BUTTON_STATE_PRESSED)
 	{
-		auto component = GUIToolkit::focusedComponent;
-		if (component == nullptr)return;
+		auto window = GUIToolkit::focusedWindow;
+		if (window == nullptr)return;
 
-		auto window = component->window;
-		float resizeBorder = GUIToolkit::windowResizeBorder;
-		auto pointerPos = GUIToolkit::pointerPos;
-		int doResizeX = pointerPos.x < resizeBorder ? 1 : window->size.x - pointerPos.x < resizeBorder ? 2 : 0;
-		int doResizeY = pointerPos.y < resizeBorder ? 1 : window->size.y - pointerPos.y < resizeBorder ? 2 : 0;
-		if (window->isResizeable && (doResizeX || doResizeY))
+		if (window->isResizeable && GUIToolkit::resizeIndex != 0)
 		{
-			int idx = doResizeY + 4 * doResizeX;
-			xdg_toplevel_resize(window->top, GUIToolkit::seat, serial, idx);
+			xdg_toplevel_resize(window->top, GUIToolkit::seat, serial, GUIToolkit::resizeIndex);
 		}
-		else if (component->doMoveWindow && component->window->isMoveable)
+		else if (window->isMoveable && GUIToolkit::focusedComponent->moveWindowOnDrag)
 		{
 			xdg_toplevel_move(window->top, GUIToolkit::seat, serial);
 		}
 	}
 }
 
-const std::vector<std::string> CURSOR_NAMES = {
-	"left_ptr", "top_side", "bottom_side", "", "left_side", "top_left_corner",
-	"bottom_left_corner", "", "right_side", "top_right_corner", "bottom_right_corner"
-};
-int prevDoResizeX = 0;
-int prevDoResizeY = 0;
 void GUIToolkitListeners::pointerMove(void* data, wl_pointer* pointer, uint32_t time, wl_fixed_t x, wl_fixed_t y)
 {
-	glm::vec2 newPointerPos = {wl_fixed_to_double(x), wl_fixed_to_double(y)};
-	GUIToolkit::pointerPos = newPointerPos;
-	GUIToolkit::onPointerMove(newPointerPos);
+	GUIToolkit::mousePos = {wl_fixed_to_double(x), wl_fixed_to_double(y)};
+	GUIToolkit::onPointerMove(GUIToolkit::mousePos);
 
-	auto component = GUIToolkit::focusedComponent;
-	if (component == nullptr)return;
+	if (GUIToolkit::focusedComponent == nullptr) return;
 
-	auto window = component->window;
-	float resizeBorder = GUIToolkit::windowResizeBorder;
-	auto pointerPos = GUIToolkit::pointerPos;
-	int doResizeX = pointerPos.x < resizeBorder ? 1 : window->wSize.x - pointerPos.x < resizeBorder ? 2 : 0;
-	int doResizeY = pointerPos.y < resizeBorder ? 1 : window->wSize.y - pointerPos.y < resizeBorder ? 2 : 0;
-	if (prevDoResizeX != doResizeX || prevDoResizeY != doResizeY)
-	{
-		int idx;
-		if (GUIToolkit::focusedSurface == GUIToolkit::focusedComponent->window->wSurf && (window->isResizeable && (doResizeX || doResizeY)))
-		{
-			idx = doResizeY + 4 * doResizeX;
-			prevDoResizeX = doResizeX;
-			prevDoResizeY = doResizeY;
+	updateResize();
 
-			std::cout << CURSOR_NAMES[idx] << '\n';
-		}
-		else
-		{
-			idx = 0;
-			prevDoResizeX = 0;
-			prevDoResizeY = 0;
-		}
+	wl_cursor* cursor = wl_cursor_theme_get_cursor(GUIToolkit::cursorTheme, Utils::CURSOR_NAMES[GUIToolkit::resizeIndex].data());
+	wl_cursor_image* cursorImage = cursor->images[0];
+	wl_buffer* cursorBuffer = wl_cursor_image_get_buffer(cursorImage);
 
-		wl_cursor* cursor = wl_cursor_theme_get_cursor(GUIToolkit::cursorTheme, CURSOR_NAMES[idx].data());
-		wl_cursor_image* cursorImage = cursor->images[0];
-		wl_buffer* cursorBuffer = wl_cursor_image_get_buffer(cursorImage);
+	wl_pointer_set_cursor(pointer, GUIToolkit::latestPointerEnterSerial, GUIToolkit::cursorSurface, cursorImage->hotspot_x, cursorImage->hotspot_y);
 
-		wl_surface_attach(GUIToolkit::cursorSurface, cursorBuffer, 0, 0);
-		wl_surface_damage_buffer(GUIToolkit::cursorSurface, 0, 0, cursorImage->width, cursorImage->height);
-		wl_surface_commit(GUIToolkit::cursorSurface);
+	wl_surface_attach(GUIToolkit::cursorSurface, cursorBuffer, 0, 0);
+	wl_surface_damage_buffer(GUIToolkit::cursorSurface, 0, 0, cursorImage->width, cursorImage->height);
+	wl_surface_commit(GUIToolkit::cursorSurface);
 
-		wl_pointer_set_cursor(pointer, GUIToolkit::latestPointerEnterSerial, GUIToolkit::cursorSurface, cursorImage->hotspot_x, cursorImage->hotspot_y);
-		GUIToolkit::cursorImage = cursorImage;
-	}
+	GUIToolkit::cursorImage = cursorImage;
 }
+
+void GUIToolkitListeners::updateResize()
+{
+	auto focusedWindow = GUIToolkit::focusedWindow;
+	if (GUIToolkit::focusedSurface != focusedWindow->wSurf || !focusedWindow->isResizeable)
+	{
+		GUIToolkit::resizeIndex = 0;
+		return;
+	}
+
+	float resizeBorder = GUIToolkit::windowResizeBorder;
+	auto pointerPos = GUIToolkit::mousePos;
+	auto doResizeX = pointerPos.x < resizeBorder ? 1 : focusedWindow->wSize.x - pointerPos.x < resizeBorder ? 2 : 0;
+	auto doResizeY = pointerPos.y < resizeBorder ? 1 : focusedWindow->wSize.y - pointerPos.y < resizeBorder ? 2 : 0;
+
+	GUIToolkit::resizeIndex = doResizeY + 4 * doResizeX;
+}
+
 void GUIToolkitListeners::pointerEnter(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
 {
-	GUIToolkit::focusedComponent = (Component*)wl_surface_get_user_data(surface);
+	auto focusedComponent = (Component*)wl_surface_get_user_data(surface);
+	GUIToolkit::focusedWindow = focusedComponent->window;
+	GUIToolkit::focusedComponent = focusedComponent;
 	GUIToolkit::focusedSurface = surface;
-	GUIToolkit::latestPointerEnterSerial = serial;
 
-	prevDoResizeX = -1;
-	prevDoResizeY = -1;
+	GUIToolkit::latestPointerEnterSerial = serial;
 }
 void GUIToolkitListeners::pointerExit(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface)
 {
+	GUIToolkit::focusedWindow = nullptr;
 	GUIToolkit::focusedComponent = nullptr;
+	GUIToolkit::focusedSurface = nullptr;
 }

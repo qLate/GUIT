@@ -1,3 +1,4 @@
+# wayland-client
 find_path(
   WAYLAND_CLIENT_INCLUDE_DIR
   NAMES wayland-client.h
@@ -19,6 +20,7 @@ if(WAYLAND_CLIENT_INCLUDE_DIR AND WAYLAND_CLIENT_LIBRARY)
   )
 endif()
 
+# wayland-server
 find_path(
   WAYLAND_SERVER_INCLUDE_DIR
   NAMES wayland-server.h
@@ -40,6 +42,8 @@ if(WAYLAND_SERVER_INCLUDE_DIR AND WAYLAND_SERVER_LIBRARY)
   )
 endif()
 
+
+# wayland-cursor
 find_path(
   WAYLAND_CURSOR_INCLUDE_DIR
   NAMES wayland-cursor.h
