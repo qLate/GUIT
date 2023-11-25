@@ -22,6 +22,8 @@ protected:
 	};
 
 	uint8_t* pixels = nullptr;
+	int pixelsCapacity = 0;
+	wl_shm_pool* pixels_pool;
 
 	glm::vec2 imageSize {1, 1};
 	std::vector<uint8_t> imageData {255, 255, 255, 255};

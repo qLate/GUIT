@@ -25,11 +25,14 @@ class Window : public Component
 
 	xdg_toplevel* top = nullptr;
 	xdg_surface* xSurf = nullptr;
+
+	glm::vec2 wSize;
 	wl_surface* wSurf = nullptr;
 	wl_callback* wSurfCallback = nullptr;
 	wl_buffer* wBuf = nullptr;
 	uint8_t* wPixels = nullptr;
-	glm::vec2 wSize;
+	wl_shm_pool* wPixels_pool;
+	int wPixelsCapacity = 0;
 
 	wl_subsurface* subsurf = nullptr;
 
