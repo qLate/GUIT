@@ -1,7 +1,6 @@
 #include "GUIToolkitListeners.h"
 
 #include <cstring>
-#include <iostream>
 #include <wayland-client-protocol.h>
 #include <linux/input-event-codes.h>
 #include <wayland-cursor.h>

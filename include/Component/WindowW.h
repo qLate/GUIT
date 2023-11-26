@@ -26,7 +26,7 @@ class WindowW : public Component
 	xdg_toplevel* top = nullptr;
 	xdg_surface* xSurf = nullptr;
 
-	glm::vec2 wSize;
+	glm::vec2 wSize{};
 	wl_surface* wSurf = nullptr;
 	wl_callback* wSurfCallback = nullptr;
 	wl_buffer* wBuf = nullptr;
