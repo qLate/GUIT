@@ -1,4 +1,4 @@
-//#define CAIRO
+#define CAIRO
 #ifdef CAIRO
 #include <stdio.h>
 

@@ -67,10 +67,7 @@ public:
     inline static EGLDisplay* egl_display = nullptr;
     inline static EGLConfig* egl_conf = nullptr;
     inline static EGLContext* egl_context = nullptr;
-    inline static EGLSurface* egl_surface;
-
     inline static cairo_device_t* cairo_device = nullptr;
-    inline static cairo_surface_t *cairo_surface = nullptr;
 
 
 

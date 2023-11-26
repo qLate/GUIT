@@ -6,6 +6,9 @@
 #include "wayland-client.h"
 #include "Color.h"
 #include "vec2.hpp"
+#include <wayland-egl.h>
+#include <EGL/egl.h>
+#include <cairo/cairo-gl.h>
 
 class SubComponent;
 class WindowW;
@@ -34,6 +37,9 @@ public:
 	wl_surface* surf = nullptr;
 	wl_callback* surfCallback = nullptr;
 	wl_buffer* buf = nullptr;
+
+    inline static EGLSurface* egl_surface;
+    inline static cairo_surface_t *cairo_surface = nullptr;
 
 	glm::vec2 size;
 	int x = 0, y = 0;

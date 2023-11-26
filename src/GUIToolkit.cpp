@@ -8,6 +8,8 @@ GUIToolkit::GUIToolkit()
 {
 	if (instance != nullptr) std::cerr << "Multiple GUIToolkit instances detected. More then 1 instance can break the behaviour.";
 	instance = this;
+    init_cairo();
+    init_egl();
 
 	display = wl_display_connect(nullptr);
 	wl_registry* registry = wl_display_get_registry(display);
@@ -23,6 +25,8 @@ GUIToolkit::GUIToolkit()
 	cursorSurface = wl_compositor_create_surface(compositor);
 	wl_surface_attach(cursorSurface, cursorBuffer, 0, 0);
 	wl_surface_commit(cursorSurface);
+
+
 
 
 }
