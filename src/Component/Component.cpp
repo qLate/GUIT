@@ -2,9 +2,7 @@
 
 #include <cstring>
 #include <string>
-#include <unistd.h>
 #include <wayland-client-protocol.h>
-#include <sys/mman.h>
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUIToolkit.h"

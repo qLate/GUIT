@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 
-class Window;
+class WindowW;
 
 class SubComponent : public Component
 {

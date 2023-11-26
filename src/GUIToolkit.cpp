@@ -1,8 +1,6 @@
-#include "GUIToolkit.h"
-
 #include <iostream>
-
-#include "Window.h"
+#include "GUIToolkit.h"
+#include "WindowW.h"
 
 GUIToolkit::GUIToolkit()
 {

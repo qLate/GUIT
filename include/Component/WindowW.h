@@ -5,7 +5,7 @@
 #include "xdg-shell-client-protocol.h"
 
 
-class Window : public Component
+class WindowW : public Component
 {
 	xdg_surface_listener xSurfListener {
 		.configure = configureXSurf
@@ -42,8 +42,8 @@ public:
 	bool isMoveable = true;
 	bool isResizeable = true;
 
-	Window(const std::string& name, glm::vec2 size);
-	~Window() override;
+	WindowW(const std::string& name, glm::vec2 size);
+	~WindowW() override;
 
 	void resize(glm::vec2 size) final;
 	void update() const override;

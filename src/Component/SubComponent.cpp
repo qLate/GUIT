@@ -1,7 +1,7 @@
 #include "SubComponent.h"
 
 #include "GUIToolkit.h"
-#include "Window.h"
+#include "WindowW.h"
 #include "vec2.hpp"
 
 SubComponent::SubComponent(Component* parent, glm::vec2 size): parent(parent)

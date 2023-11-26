@@ -8,7 +8,7 @@
 #include "vec2.hpp"
 
 class SubComponent;
-class Window;
+class WindowW;
 
 class Component
 {
@@ -38,7 +38,7 @@ public:
 	glm::vec2 size;
 	int x = 0, y = 0;
 
-	Window* window;
+	WindowW* window;
 	bool moveWindowOnDrag;
 
 	Component();

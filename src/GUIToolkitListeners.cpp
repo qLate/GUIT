@@ -7,7 +7,7 @@
 #include <wayland-cursor.h>
 
 #include "GUIToolkit.h"
-#include "Window.h"
+#include "WindowW.h"
 
 
 void GUIToolkitListeners::registerGlobal(void* data, wl_registry* reg, uint32_t name, const char* interface, uint32_t version)

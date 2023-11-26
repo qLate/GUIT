@@ -1,15 +1,15 @@
 #include "GUIToolkit.h"
 #include "Component.h"
-#include "Window.h"
+#include "WindowW.h"
 #include "SubComponent.h"
 
-#include "cairo-gl.h"
+#include "cairo/cairo-gl.h"
 
 int main()
 {
     GUIToolkit toolkit {};
 
-	Window w1 {"Test window", {1, 1}};
+	WindowW w1 {"Test window", {1, 1}};
 	w1.setImage("../images/sviat.jpg");
     w1.resize({500, 500});
 

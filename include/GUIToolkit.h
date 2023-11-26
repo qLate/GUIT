@@ -11,7 +11,7 @@
 
 class Component;
 class GUIToolkit;
-class Window;
+class WindowW;
 
 
 class GUIToolkit
@@ -24,13 +24,13 @@ public:
 	inline static constexpr int windowResizeBorder = 10;
 
 	inline static GUIToolkit* instance = nullptr;
-	inline static std::vector<Window*> windows {};
+	inline static std::vector<WindowW*> windows {};
 
 	// Hovered and focused components
-	inline static Window* hoveredWindow = nullptr;
+	inline static WindowW* hoveredWindow = nullptr;
 	inline static Component* hoveredComponent = nullptr;
 	inline static wl_surface* hoveredSurface = nullptr;
-	inline static Window* focusedWindow = nullptr;
+	inline static WindowW* focusedWindow = nullptr;
 	inline static Component* focusedComponent = nullptr;
 
 	// Mouse
