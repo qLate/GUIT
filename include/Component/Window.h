@@ -26,7 +26,7 @@ class WindowW : public Component
 	xdg_toplevel* top = nullptr;
 	xdg_surface* xSurf = nullptr;
 
-	glm::vec2 wSize{};
+	glm::vec2 wSize {};
 	wl_surface* wSurf = nullptr;
 	wl_callback* wSurfCallback = nullptr;
 	wl_buffer* wBuf = nullptr;
@@ -42,11 +42,11 @@ public:
 	bool isMoveable = true;
 	bool isResizeable = true;
 
-	WindowW(const std::string& name, glm::vec2 size);
+	WindowW(const std::string& name, glm::vec2 size = {500, 500});
 	~WindowW() override;
 
 	void resize(glm::vec2 size) final;
-	void update() const override;
+	void update() override;
 
 	void switchFullscreen();
 
@@ -55,4 +55,5 @@ public:
 	static void closeTop(void* data, xdg_toplevel* top);
 
 	friend class GUIToolkitListeners;
+	friend class Component;
 };

@@ -10,8 +10,6 @@
 #include "Action.h"
 
 #include <wayland-client.h>
-#include <wayland-client-protocol.h>
-#include <wayland-egl.h>
 #include <EGL/egl.h>
 #include <cairo/cairo-gl.h>
 
@@ -64,10 +62,10 @@ public:
 	inline static wl_pointer* pointer = nullptr;
 
     // EGL Cairo
-    inline static EGLDisplay* egl_display = nullptr;
-    inline static EGLConfig* egl_conf = nullptr;
-    inline static EGLContext* egl_context = nullptr;
-    inline static cairo_device_t* cairo_device = nullptr;
+    inline static EGLDisplay* eglDisplay = nullptr;
+    inline static EGLConfig* eglConfig = nullptr;
+    inline static EGLContext* eglContext = nullptr;
+    inline static cairo_device_t* cairoDevice = nullptr;
 
 
 
@@ -76,8 +74,8 @@ public:
 
 	void loop() const;
 
-    void init_cairo();
-    void init_egl();
+	static void initCairo();
+    void initEGL() const;
 
     friend class GUIToolkitListeners;
 };

@@ -16,7 +16,7 @@ public:
 	glm::vec2 anchoredPos;
 	glm::vec2 pivot = {0.5f, 0.5f};
 
-	SubComponent(Component* parent, glm::vec2 size);
+	SubComponent(Component* parent, glm::vec2 size = {100, 100});
 
 	void setPos(glm::vec2 pos);
 	void setAnchoredPos(glm::vec2 pos);

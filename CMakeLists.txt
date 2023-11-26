@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set(SOURCE_FILES "src/Component/Component.cpp" "src/xdg-shell-protocol.c" "src/main.cpp" "src/GUIToolkit.cpp" "src/GUIToolkitListeners.cpp"
 				 "include/Action.h" "src/Component/Window.cpp" "src/Component/SubComponent.cpp" "src/Utils.cpp"
-		include/Component/TextComponent.h)
+		include/Component/TextComponent.h "include/Debug.h")
 
 include_directories(libs/glm libs/glm/glm include include/Component libs)
 

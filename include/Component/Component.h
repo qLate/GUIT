@@ -24,22 +24,20 @@ protected:
 		.leave = onSurfaceLeaveCallback,
 	};
 
-	uint8_t* pixels = nullptr;
-	int pixelsCapacity = 0;
-	wl_shm_pool* pixels_pool = nullptr;
-
-	glm::vec2 imageSize {1, 1};
+	glm::ivec2 imageSize {1, 1};
 	std::vector<uint8_t> imageData {255, 255, 255, 255};
+	std::vector<uint8_t> scaledImageData {255, 255, 255, 255};
+	cairo_surface_t* imageDataSurf;
 
 public:
 	std::vector<SubComponent*> subComponents {};
 
 	wl_surface* surf = nullptr;
 	wl_callback* surfCallback = nullptr;
-	wl_buffer* buf = nullptr;
 
-    inline static EGLSurface* egl_surface;
-    inline static cairo_surface_t *cairo_surface = nullptr;
+	wl_egl_window* eWindow = nullptr;
+	EGLSurface eSurf = nullptr;
+	cairo_surface_t* cSurf = nullptr;
 
 	glm::vec2 size;
 	int x = 0, y = 0;
@@ -47,14 +45,15 @@ public:
 	WindowW* window;
 	bool moveWindowOnDrag;
 
-	Component();
+
+	Component(glm::vec2 size);
 	virtual ~Component();
 
-	virtual void update() const;
+	virtual void update();
 
 	virtual void resize(glm::vec2 size);
-	void scaleContent(glm::vec2 size) const;
 
+	void updateImageData();
 	void setColor(Color color);
 	void setImage(const std::string& path);
 

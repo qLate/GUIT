@@ -6,7 +6,7 @@
 #include <wayland-cursor.h>
 
 #include "GUIToolkit.h"
-#include "WindowW.h"
+#include "Window.h"
 
 
 void GUIToolkitListeners::registerGlobal(void* data, wl_registry* reg, uint32_t name, const char* interface, uint32_t version)
@@ -60,8 +60,8 @@ void GUIToolkitListeners::keyboardKey(void* data, wl_keyboard* kb, uint32_t ser,
 	if (key == 1) toolkit->closeTrigger = true;
 	else if (key == KEY_F)
 	{
-		if (state == WL_KEYBOARD_KEY_STATE_PRESSED && GUIToolkit::focusedWindow != nullptr)
-			GUIToolkit::focusedWindow->switchFullscreen();
+		if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
+			GUIToolkit::windows[0]->switchFullscreen();
 	}
 }
 void GUIToolkitListeners::pointerButton(void* data, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)

@@ -1,8 +1,10 @@
-#include "WindowW.h"
+#include "Window.h"
+
+#include "Debug.h"
 #include "GUIToolkit.h"
 #include "Utils.h"
 
-WindowW::WindowW(const std::string& name, glm::vec2 size)
+WindowW::WindowW(const std::string& name, glm::vec2 size): Component(size)
 {
 	this->window = this;
 	this->moveWindowOnDrag = true;
@@ -24,9 +26,8 @@ WindowW::WindowW(const std::string& name, glm::vec2 size)
 
 	subsurf = wl_subcompositor_get_subsurface(GUIToolkit::subcompositor, surf, wSurf);
 
-	GUIToolkit::windows.push_back(this);
-
 	resize(size);
+	GUIToolkit::windows.push_back(this);
 }
 WindowW::~WindowW()
 {
@@ -37,20 +38,19 @@ WindowW::~WindowW()
 }
 void WindowW::resize(glm::vec2 size)
 {
+	if(this->size == size) return;
 	int border = GUIToolkit::windowResizeBorder;
-	if (this->size == size) return;
 
 	int w = (int)size.x + (isFullscreen ? 0 : 2 * border);
 	int h = (int)size.y + (isFullscreen ? 0 : 2 * border);
 	Utils::resizeSurface(this->wSize, {w, h}, wPixelsCapacity, wSurf, wBuf, wPixels, wPixels_pool);
-
 	wl_subsurface_set_position(subsurf, isFullscreen ? 0 : border, isFullscreen ? 0 : border);
 
 	this->wSize = {w, h};
 
 	Component::resize(size);
 }
-void WindowW::update() const
+void WindowW::update() 
 {
 	Component::update();
 
@@ -69,18 +69,25 @@ void WindowW::switchFullscreen()
 
 void WindowW::configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial)
 {
+	Debug::funcEntered(__FUNCTION__);
 	auto window = (WindowW*)data;
 	xdg_surface_ack_configure(xSurf, serial);
 
 	window->resize(window->size + (window->isFullscreen ? glm::vec2(GUIToolkit::windowResizeBorder * 2, GUIToolkit::windowResizeBorder * 2) : glm::vec2()));
-	window->update();
+	Debug::funcExit(__FUNCTION__);
 }
 void WindowW::configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h_, wl_array* stat)
 {
-	if (!w_ && !h_) return;
+	Debug::funcEntered(__FUNCTION__);
+	if (w_ <= 0 || h_ <= 0)
+	{
+		Debug::funcExit(__FUNCTION__);
+		return;
+	}
 
 	auto window = (WindowW*)data;
 	if (window->size.x != w_ || window->size.y != h_)
 		window->resize(glm::vec2(w_, h_) - glm::vec2(2 * GUIToolkit::windowResizeBorder, 2 * GUIToolkit::windowResizeBorder));
+	Debug::funcExit(__FUNCTION__);
 }
 void WindowW::closeTop(void* data, xdg_toplevel* top) {}

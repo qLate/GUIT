@@ -32,6 +32,11 @@ bool Utils::readImage(std::vector<uint8_t>& image, const std::filesystem::path& 
 	if (data != nullptr)
 		image = std::vector(data, data + w * h * 4);
 
+	for (int i = 0; i < w * h * 4; i += 4)
+	{
+		std::swap(image[i], image[i + 2]);
+	}
+
 	stbi_image_free(data);
 	return (data != nullptr);
 }
