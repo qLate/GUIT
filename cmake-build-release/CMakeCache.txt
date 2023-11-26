@@ -14,6 +14,12 @@
 # EXTERNAL cache entries
 ########################
 
+//Path to a file.
+CAIRO_INCLUDE_DIRS:PATH=/usr/include/cairo
+
+//Path to a library.
+CAIRO_LIBRARIES:FILEPATH=/usr/lib/x86_64-linux-gnu/libcairo.so
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
 
@@ -221,8 +227,17 @@ GUIToolkit_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 GUIToolkit_SOURCE_DIR:STATIC=/mnt/hgfs/C/Users/Oleg/Documents/Programming/OS/GUIToolkit
 
+//Arguments to supply to pkg-config
+PKG_CONFIG_ARGN:STRING=
+
+//pkg-config executable
+PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
+
 //Path to a file.
 WAYLAND_CLIENT_INCLUDE_DIR:PATH=/usr/include
+
+//Path to a library.
+WAYLAND_CLIENT_LIBRARIES:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-client.so
 
 //Path to a library.
 WAYLAND_CLIENT_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-client.so
@@ -231,13 +246,40 @@ WAYLAND_CLIENT_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-client.so
 WAYLAND_CURSOR_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
+WAYLAND_CURSOR_LIBRARIES:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-cursor.so
+
+//Path to a library.
 WAYLAND_CURSOR_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-cursor.so
+
+//Path to a file.
+WAYLAND_EGL_INCLUDE_DIR:PATH=/usr/include
+
+//Path to a library.
+WAYLAND_EGL_LIBRARIES:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-egl.so
 
 //Path to a file.
 WAYLAND_SERVER_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
+WAYLAND_SERVER_LIBRARIES:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-server.so
+
+//Path to a library.
 WAYLAND_SERVER_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-server.so
+
+//Path to a library.
+pkgcfg_lib_PC_CAIRO_cairo:FILEPATH=/usr/lib/x86_64-linux-gnu/libcairo.so
+
+//Path to a library.
+pkgcfg_lib_PKG_WAYLAND_wayland-client:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-client.so
+
+//Path to a library.
+pkgcfg_lib_PKG_WAYLAND_wayland-cursor:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-cursor.so
+
+//Path to a library.
+pkgcfg_lib_PKG_WAYLAND_wayland-egl:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-egl.so
+
+//Path to a library.
+pkgcfg_lib_PKG_WAYLAND_wayland-server:FILEPATH=/usr/lib/x86_64-linux-gnu/libwayland-server.so
 
 
 ########################
@@ -383,24 +425,147 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Cairo
+FIND_PACKAGE_MESSAGE_DETAILS_Cairo:INTERNAL=[/usr/include/cairo][/usr/lib/x86_64-linux-gnu/libcairo.so][TRUE][v()]
+//Details about finding PkgConfig
+FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/usr/bin/pkg-config][v0.29.2()]
+//Details about finding WAYLAND
+FIND_PACKAGE_MESSAGE_DETAILS_WAYLAND:INTERNAL=[/usr/lib/x86_64-linux-gnu/libwayland-client.so;/usr/lib/x86_64-linux-gnu/libwayland-server.so;/usr/lib/x86_64-linux-gnu/libwayland-egl.so;/usr/lib/x86_64-linux-gnu/libwayland-cursor.so][/usr/include][v()]
 //Details about finding WAYLAND_CLIENT
 FIND_PACKAGE_MESSAGE_DETAILS_WAYLAND_CLIENT:INTERNAL=[/usr/lib/x86_64-linux-gnu/libwayland-client.so][/usr/include][v()]
 //Details about finding WAYLAND_CURSOR
 FIND_PACKAGE_MESSAGE_DETAILS_WAYLAND_CURSOR:INTERNAL=[/usr/lib/x86_64-linux-gnu/libwayland-cursor.so][/usr/include][v()]
+//Details about finding WAYLAND_EGL
+FIND_PACKAGE_MESSAGE_DETAILS_WAYLAND_EGL:INTERNAL=[/usr/lib/x86_64-linux-gnu/libwayland-egl.so][/usr/include][v()]
 //Details about finding WAYLAND_SERVER
 FIND_PACKAGE_MESSAGE_DETAILS_WAYLAND_SERVER:INTERNAL=[/usr/lib/x86_64-linux-gnu/libwayland-server.so][/usr/include][v()]
+PC_CAIRO_CFLAGS:INTERNAL=-I/usr/include/cairo;-I/usr/include/glib-2.0;-I/usr/lib/x86_64-linux-gnu/glib-2.0/include;-I/usr/include/pixman-1;-I/usr/include/uuid;-I/usr/include/freetype2;-I/usr/include/libpng16
+PC_CAIRO_CFLAGS_I:INTERNAL=
+PC_CAIRO_CFLAGS_OTHER:INTERNAL=
+PC_CAIRO_FOUND:INTERNAL=1
+PC_CAIRO_INCLUDEDIR:INTERNAL=/usr/include
+PC_CAIRO_INCLUDE_DIRS:INTERNAL=/usr/include/cairo;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/pixman-1;/usr/include/uuid;/usr/include/freetype2;/usr/include/libpng16
+PC_CAIRO_LDFLAGS:INTERNAL=-L/usr/lib/x86_64-linux-gnu;-lcairo
+PC_CAIRO_LDFLAGS_OTHER:INTERNAL=
+PC_CAIRO_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+PC_CAIRO_LIBRARIES:INTERNAL=cairo
+PC_CAIRO_LIBRARY_DIRS:INTERNAL=/usr/lib/x86_64-linux-gnu
+PC_CAIRO_LIBS:INTERNAL=
+PC_CAIRO_LIBS_L:INTERNAL=
+PC_CAIRO_LIBS_OTHER:INTERNAL=
+PC_CAIRO_LIBS_PATHS:INTERNAL=
+PC_CAIRO_MODULE_NAME:INTERNAL=cairo
+PC_CAIRO_PREFIX:INTERNAL=/usr
+PC_CAIRO_STATIC_CFLAGS:INTERNAL=-I/usr/include/cairo;-I/usr/include/glib-2.0;-I/usr/lib/x86_64-linux-gnu/glib-2.0/include;-I/usr/include/pixman-1;-I/usr/include/uuid;-I/usr/include/freetype2;-I/usr/include/libpng16
+PC_CAIRO_STATIC_CFLAGS_I:INTERNAL=
+PC_CAIRO_STATIC_CFLAGS_OTHER:INTERNAL=
+PC_CAIRO_STATIC_INCLUDE_DIRS:INTERNAL=/usr/include/cairo;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/pixman-1;/usr/include/uuid;/usr/include/freetype2;/usr/include/libpng16
+PC_CAIRO_STATIC_LDFLAGS:INTERNAL=-L/usr/lib/x86_64-linux-gnu;-lcairo;-lz;-lgobject-2.0;-lffi;-lglib-2.0;-pthread;-lm;-lpcre;-lpixman-1;-lfontconfig;-luuid;-lexpat;-lm;-lfreetype;-lbrotlidec;-lbrotlicommon;-lpng16;-lm;-lz;-lm;-lz;-lxcb-shm;-lxcb-render;-lXrender;-lXext;-lX11;-lpthread;-lxcb;-lXau;-lXdmcp
+PC_CAIRO_STATIC_LDFLAGS_OTHER:INTERNAL=-pthread
+PC_CAIRO_STATIC_LIBDIR:INTERNAL=
+PC_CAIRO_STATIC_LIBRARIES:INTERNAL=cairo;z;gobject-2.0;ffi;glib-2.0;m;pcre;pixman-1;fontconfig;uuid;expat;m;freetype;brotlidec;brotlicommon;png16;m;z;m;z;xcb-shm;xcb-render;Xrender;Xext;X11;pthread;xcb;Xau;Xdmcp
+PC_CAIRO_STATIC_LIBRARY_DIRS:INTERNAL=/usr/lib/x86_64-linux-gnu
+PC_CAIRO_STATIC_LIBS:INTERNAL=
+PC_CAIRO_STATIC_LIBS_L:INTERNAL=
+PC_CAIRO_STATIC_LIBS_OTHER:INTERNAL=
+PC_CAIRO_STATIC_LIBS_PATHS:INTERNAL=
+PC_CAIRO_VERSION:INTERNAL=1.16.0
+PC_CAIRO_cairo_INCLUDEDIR:INTERNAL=
+PC_CAIRO_cairo_LIBDIR:INTERNAL=
+PC_CAIRO_cairo_PREFIX:INTERNAL=
+PC_CAIRO_cairo_VERSION:INTERNAL=
+//ADVANCED property for variable: PKG_CONFIG_ARGN
+PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
+PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
+PKG_WAYLAND_CFLAGS:INTERNAL=
+PKG_WAYLAND_CFLAGS_I:INTERNAL=
+PKG_WAYLAND_CFLAGS_OTHER:INTERNAL=
+PKG_WAYLAND_FOUND:INTERNAL=1
+PKG_WAYLAND_INCLUDEDIR:INTERNAL=
+PKG_WAYLAND_INCLUDE_DIRS:INTERNAL=
+PKG_WAYLAND_LDFLAGS:INTERNAL=-L/usr/lib/x86_64-linux-gnu;-lwayland-server;-lwayland-egl;-lwayland-client;-lwayland-cursor
+PKG_WAYLAND_LDFLAGS_OTHER:INTERNAL=
+PKG_WAYLAND_LIBDIR:INTERNAL=
+PKG_WAYLAND_LIBRARIES:INTERNAL=wayland-server;wayland-egl;wayland-client;wayland-cursor
+PKG_WAYLAND_LIBRARY_DIRS:INTERNAL=/usr/lib/x86_64-linux-gnu
+PKG_WAYLAND_LIBS:INTERNAL=
+PKG_WAYLAND_LIBS_L:INTERNAL=
+PKG_WAYLAND_LIBS_OTHER:INTERNAL=
+PKG_WAYLAND_LIBS_PATHS:INTERNAL=
+PKG_WAYLAND_MODULE_NAME:INTERNAL=
+PKG_WAYLAND_PREFIX:INTERNAL=
+PKG_WAYLAND_STATIC_CFLAGS:INTERNAL=
+PKG_WAYLAND_STATIC_CFLAGS_I:INTERNAL=
+PKG_WAYLAND_STATIC_CFLAGS_OTHER:INTERNAL=
+PKG_WAYLAND_STATIC_INCLUDE_DIRS:INTERNAL=
+PKG_WAYLAND_STATIC_LDFLAGS:INTERNAL=-L/usr/lib/x86_64-linux-gnu;-lwayland-server;-lm;-pthread;-lwayland-egl;-lwayland-cursor;-lwayland-client;-lm;-pthread;-lffi
+PKG_WAYLAND_STATIC_LDFLAGS_OTHER:INTERNAL=-pthread
+PKG_WAYLAND_STATIC_LIBDIR:INTERNAL=
+PKG_WAYLAND_STATIC_LIBRARIES:INTERNAL=wayland-server;m;wayland-egl;wayland-cursor;wayland-client;m;ffi
+PKG_WAYLAND_STATIC_LIBRARY_DIRS:INTERNAL=/usr/lib/x86_64-linux-gnu
+PKG_WAYLAND_STATIC_LIBS:INTERNAL=
+PKG_WAYLAND_STATIC_LIBS_L:INTERNAL=
+PKG_WAYLAND_STATIC_LIBS_OTHER:INTERNAL=
+PKG_WAYLAND_STATIC_LIBS_PATHS:INTERNAL=
+PKG_WAYLAND_VERSION:INTERNAL=
+PKG_WAYLAND_wayland-client_INCLUDEDIR:INTERNAL=/usr/include
+PKG_WAYLAND_wayland-client_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+PKG_WAYLAND_wayland-client_MODULE_NAME:INTERNAL=wayland-client
+PKG_WAYLAND_wayland-client_PREFIX:INTERNAL=/usr
+PKG_WAYLAND_wayland-client_VERSION:INTERNAL=1.20.0
+PKG_WAYLAND_wayland-cursor_INCLUDEDIR:INTERNAL=/usr/include
+PKG_WAYLAND_wayland-cursor_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+PKG_WAYLAND_wayland-cursor_MODULE_NAME:INTERNAL=wayland-cursor
+PKG_WAYLAND_wayland-cursor_PREFIX:INTERNAL=/usr
+PKG_WAYLAND_wayland-cursor_VERSION:INTERNAL=1.20.0
+PKG_WAYLAND_wayland-egl_INCLUDEDIR:INTERNAL=/usr/include
+PKG_WAYLAND_wayland-egl_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+PKG_WAYLAND_wayland-egl_MODULE_NAME:INTERNAL=wayland-egl
+PKG_WAYLAND_wayland-egl_PREFIX:INTERNAL=/usr
+PKG_WAYLAND_wayland-egl_VERSION:INTERNAL=18.1.0
+PKG_WAYLAND_wayland-server_INCLUDEDIR:INTERNAL=/usr/include
+PKG_WAYLAND_wayland-server_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+PKG_WAYLAND_wayland-server_MODULE_NAME:INTERNAL=wayland-server
+PKG_WAYLAND_wayland-server_PREFIX:INTERNAL=/usr
+PKG_WAYLAND_wayland-server_VERSION:INTERNAL=1.20.0
 //ADVANCED property for variable: WAYLAND_CLIENT_INCLUDE_DIR
 WAYLAND_CLIENT_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: WAYLAND_CLIENT_LIBRARIES
+WAYLAND_CLIENT_LIBRARIES-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: WAYLAND_CLIENT_LIBRARY
 WAYLAND_CLIENT_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: WAYLAND_CURSOR_INCLUDE_DIR
 WAYLAND_CURSOR_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: WAYLAND_CURSOR_LIBRARIES
+WAYLAND_CURSOR_LIBRARIES-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: WAYLAND_CURSOR_LIBRARY
 WAYLAND_CURSOR_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: WAYLAND_EGL_INCLUDE_DIR
+WAYLAND_EGL_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: WAYLAND_EGL_LIBRARIES
+WAYLAND_EGL_LIBRARIES-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: WAYLAND_SERVER_INCLUDE_DIR
 WAYLAND_SERVER_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: WAYLAND_SERVER_LIBRARIES
+WAYLAND_SERVER_LIBRARIES-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: WAYLAND_SERVER_LIBRARY
 WAYLAND_SERVER_LIBRARY-ADVANCED:INTERNAL=1
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
+__pkg_config_arguments_PC_CAIRO:INTERNAL=cairo
+__pkg_config_arguments_PKG_WAYLAND:INTERNAL=QUIET;wayland-client;wayland-server;wayland-egl;wayland-cursor
+__pkg_config_checked_PC_CAIRO:INTERNAL=1
+__pkg_config_checked_PKG_WAYLAND:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_PC_CAIRO_cairo
+pkgcfg_lib_PC_CAIRO_cairo-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_PKG_WAYLAND_wayland-client
+pkgcfg_lib_PKG_WAYLAND_wayland-client-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_PKG_WAYLAND_wayland-cursor
+pkgcfg_lib_PKG_WAYLAND_wayland-cursor-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_PKG_WAYLAND_wayland-egl
+pkgcfg_lib_PKG_WAYLAND_wayland-egl-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_PKG_WAYLAND_wayland-server
+pkgcfg_lib_PKG_WAYLAND_wayland-server-ADVANCED:INTERNAL=1
+prefix_result:INTERNAL=/usr/lib/x86_64-linux-gnu
 

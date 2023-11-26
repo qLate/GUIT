@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "xdg-shell-client-protocol.h"
 
+
 class Window : public Component
 {
 	xdg_surface_listener xSurfListener {

@@ -1,10 +1,9 @@
 #include "GUIToolkit.h"
 #include "Component.h"
-
 #include "Window.h"
-
-
 #include "SubComponent.h"
+
+#include "cairo-gl.h"
 
 int main()
 {

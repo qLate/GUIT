@@ -8,7 +8,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUIToolkit.h"
-#include "Subcomponent.h"
+#include "SubComponent.h"
 #include "Utils.h"
 
 

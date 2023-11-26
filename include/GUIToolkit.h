@@ -4,7 +4,6 @@
 #include <wayland-client-protocol.h>
 #include <wayland-cursor.h>
 
-#include "xdg-shell-client-protocol.h"
 #include "GUIToolkitListeners.h"
 #include "vec2.hpp"
 #include "detail/func_packing_simd.inl"
