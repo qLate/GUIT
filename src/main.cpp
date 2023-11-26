@@ -1,44 +1,47 @@
+//#define CAIRO
+#ifdef CAIRO
 #include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <wayland-client.h>
-#include <wayland-server.h>
 #include <wayland-client-protocol.h>
 #include <wayland-egl.h>
 #include <EGL/egl.h>
+#include <cairo/cairo-gl.h>
+#include "xdg-shell-client-protocol.h"
+
+wl_display *display = NULL;
 
 #include <cairo/cairo-gl.h>
 
-struct wl_display *display = NULL;
-struct wl_compositor *compositor = NULL;
-struct wl_surface *surface;
-struct wl_egl_window *egl_window;
-struct wl_region *region;
-struct wl_shell *shell;
-struct wl_shell_surface *shell_surface;
-
+wl_compositor *compositor = NULL;
+wl_surface *surf;
+wl_egl_window *egl_window;
+xdg_wm_base* sharedBase;
 EGLDisplay egl_display;
+
 EGLConfig egl_conf;
 EGLSurface egl_surface;
 EGLContext egl_context;
-
 cairo_surface_t *cairo_surface;
-cairo_device_t *cairo_device;
 
-static void
-global_registry_handler(void *data, struct wl_registry *registry, uint32_t id,
+cairo_device_t *cairo_device;
+xdg_wm_base_listener sharedBaseListener = {
+        .ping = [](void*, xdg_wm_base* sh, uint32_t ser) { xdg_wm_base_pong(sh, ser); }
+};
+
+static void global_registry_handler(void *data, struct wl_registry *registry, uint32_t id,
                         const char *interface, uint32_t version)
 {
     printf("Got a registry event for %s id %d\n", interface, id);
     if (strcmp(interface, "wl_compositor") == 0) {
-        compositor = static_cast<wl_compositor *>(wl_registry_bind(registry,
-                                                                   id,
-                                                                   &wl_compositor_interface,
-                                                                   1));
-    } else if (strcmp(interface, "wl_shell") == 0) {
-        shell = static_cast<wl_shell *>(wl_registry_bind(registry, id,
-                                                         &wl_shell_interface, 1));
-
+        compositor = (wl_compositor *)wl_registry_bind(registry,id,&wl_compositor_interface, 1);
+    }
+    else if (!strcmp(interface, xdg_wm_base_interface.name))
+    {
+        sharedBase = (xdg_wm_base*)wl_registry_bind(registry, id, &xdg_wm_base_interface, 1);
+        xdg_wm_base_add_listener(sharedBase, &sharedBaseListener, nullptr);
     }
 }
 
@@ -58,7 +61,7 @@ static void init_cairo();
 static void
 create_window() {
 
-    egl_window = wl_egl_window_create(surface,
+    egl_window = wl_egl_window_create(surf,
                                       480, 360);
     if (egl_window == EGL_NO_SURFACE) {
         fprintf(stderr, "Can't create egl window\n");
@@ -131,7 +134,6 @@ init_cairo() {
     }
 }
 
-
 static void
 init_egl() {
     EGLint major, minor, count, n, size;
@@ -200,6 +202,7 @@ init_egl() {
     }
 }
 
+
 static void
 get_server_references(void) {
 
@@ -216,11 +219,11 @@ get_server_references(void) {
     wl_display_dispatch(display);
     wl_display_roundtrip(display);
 
-    if (compositor == NULL || shell == NULL) {
-        fprintf(stderr, "Can't find compositor or shell\n");
+    if (compositor == NULL ) {
+        fprintf(stderr, "Can't find compositor\n");
         exit(1);
     } else {
-        fprintf(stderr, "Found compositor and shell\n");
+        fprintf(stderr, "Found compositor\n");
     }
 }
 
@@ -228,16 +231,10 @@ int main(int argc, char **argv) {
 
     get_server_references();
 
-    surface = wl_compositor_create_surface(compositor);
-    if (surface == NULL) {
-        fprintf(stderr, "Can't create surface\n");
-        exit(1);
-    } else {
-        fprintf(stderr, "Created surface\n");
-    }
+    surf = wl_compositor_create_surface(compositor);
+    auto xSurf = xdg_wm_base_get_xdg_surface(sharedBase, surf);
 
-    shell_surface = wl_shell_get_shell_surface(shell, surface);
-    wl_shell_surface_set_toplevel(shell_surface);
+    auto top = xdg_surface_get_toplevel(xSurf);
 
     init_egl();
     init_cairo();
@@ -255,28 +252,32 @@ int main(int argc, char **argv) {
 }
 
 
-//#include "GUIToolkit.h"
-//#include "Component.h"
-//#include "WindowW.h"
-//#include "SubComponent.h"
-//
-//#include "cairo/cairo-gl.h"
+#else
+#include "GUIToolkit.h"
 
-//int main()
-//{
-//    GUIToolkit toolkit {};
-//
-//    WindowW w1 {"Test window", {1, 1}};
-//    w1.setImage("../images/sviat.jpg");
-//    w1.resize({500, 500});
-//
-//    SubComponent s1 {&w1, {w1.size.x/2, 100}};
-//    s1.moveWindowOnDrag = true;
-//    s1.setAnchors({0, 0.5f}, {1, 0.5f});
-//    s1.setColor(Color::blue());
-//
-//
-//    toolkit.loop();
-//
-//    return 0;
-//}
+
+#include "Component.h"
+#include "WindowW.h"
+#include "SubComponent.h"
+
+
+int main()
+
+{
+    GUIToolkit toolkit {};
+
+    WindowW w1 {"Test window", {1, 1}};
+    w1.setImage("../images/sviat.jpg");
+    w1.resize({500, 500});
+
+    SubComponent s1 {&w1, {w1.size.x/2, 100}};
+    s1.moveWindowOnDrag = true;
+    s1.setAnchors({0, 0.5f}, {1, 0.5f});
+    s1.setColor(Color::blue());
+
+
+    toolkit.loop();
+
+    return 0;
+}
+#endif

@@ -9,6 +9,14 @@
 #include "detail/func_packing_simd.inl"
 #include "Action.h"
 
+#include <wayland-client.h>
+#include <wayland-client-protocol.h>
+#include <wayland-egl.h>
+#include <EGL/egl.h>
+#include <cairo/cairo-gl.h>
+
+#include "xdg-shell-client-protocol.h"
+
 class Component;
 class GUIToolkit;
 class WindowW;
@@ -55,11 +63,24 @@ public:
 	inline static wl_keyboard* keyboard = nullptr;
 	inline static wl_pointer* pointer = nullptr;
 
+    // EGL Cairo
+    inline static EGLDisplay* egl_display = nullptr;
+    inline static EGLConfig* egl_conf = nullptr;
+    inline static EGLContext* egl_context = nullptr;
+    inline static EGLSurface* egl_surface;
+
+    inline static cairo_device_t* cairo_device = nullptr;
+    inline static cairo_surface_t *cairo_surface = nullptr;
+
+
 
 	GUIToolkit();
 	~GUIToolkit();
 
 	void loop() const;
 
-	friend class GUIToolkitListeners;
+    void init_cairo();
+    void init_egl();
+
+    friend class GUIToolkitListeners;
 };
