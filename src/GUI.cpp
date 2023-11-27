@@ -1,19 +1,33 @@
+// ReSharper disable CppMemberFunctionMayBeStatic
+#include "GUI.h"
+
 #include <iostream>
-#include "GUIToolkit.h"
+#include <linux/input-event-codes.h>
+
 #include "Window.h"
 
 
-GUIToolkit::GUIToolkit()
+GUI::GUI()
 {
-	if (instance != nullptr) std::cerr << "Multiple GUIToolkit instances detected. More then 1 instance can break the behaviour.";
+	if (instance != nullptr) std::cerr << "Multiple GUI Toolkit instances detected. More then 1 instance will probably break the behaviour.";
 	instance = this;
 
+	initWayland();
+	initCursor();
+	initEGL();
+	initCairo();
+
+	initInteraction();
+}
+void GUI::initWayland()
+{
 	display = wl_display_connect(nullptr);
 	wl_registry* registry = wl_display_get_registry(display);
 	wl_registry_add_listener(registry, &listeners.registryListener, this);
 	wl_display_roundtrip(display);
-
-	// Cursor
+}
+void GUI::initCursor()
+{
 	cursorTheme = wl_cursor_theme_load("Yaru", 24, sharedMemory);
 	wl_cursor* cursor = wl_cursor_theme_get_cursor(cursorTheme, "left_ptr");
 	cursorImage = cursor->images[0];
@@ -22,28 +36,12 @@ GUIToolkit::GUIToolkit()
 	cursorSurface = wl_compositor_create_surface(compositor);
 	wl_surface_attach(cursorSurface, cursorBuffer, 0, 0);
 	wl_surface_commit(cursorSurface);
-
-	initEGL();
-	initCairo();
-
 }
-GUIToolkit::~GUIToolkit()
-{
-	if (keyboard) wl_keyboard_destroy(keyboard);
-	wl_seat_release(seat);
-	wl_display_disconnect(display);
-}
-
-void GUIToolkit::loop() const
-{
-	while (wl_display_dispatch(display) && !closeTrigger) { }
-}
-
-void GUIToolkit::initCairo()
+void GUI::initCairo()
 {
 	cairoDevice = cairo_egl_device_create(eglDisplay, eglContext);
 }
-void GUIToolkit::initEGL() const
+void GUI::initEGL() const
 {
 	EGLint major, minor, count, n, size;
 	EGLint config_attributes[] = {
@@ -79,4 +77,33 @@ void GUIToolkit::initEGL() const
 	}
 
 	eglContext = static_cast<EGLContext*>(eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, context_attributes));
+}
+void GUI::initInteraction()
+{
+	onPointerDown += [](int button, int serial)
+	{
+		if (button != BTN_LEFT) return;
+		if (focusedWindow->isResizeable && resizeIndex != 0)
+		{
+			xdg_toplevel_resize(focusedWindow->top, seat, serial, resizeIndex);
+		}
+		else if (hoveredSurface == hoveredWindow->wSurf &&
+			mousePos.y <= WindoW::headerHeight + WindoW::resizeBorder && mousePos.y > WindoW::resizeBorder &&
+			mousePos.x > WindoW::resizeBorder && mousePos.x < focusedWindow->wSize.x - WindoW::resizeBorder)
+		{
+			xdg_toplevel_move(focusedWindow->top, seat, serial);
+		}
+	};
+}
+
+GUI::~GUI()
+{
+	if (keyboard) wl_keyboard_destroy(keyboard);
+	wl_seat_release(seat);
+	wl_display_disconnect(display);
+}
+
+void GUI::loop() const
+{
+	while (wl_display_dispatch(display) && !closeTrigger) { }
 }

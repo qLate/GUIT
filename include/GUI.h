@@ -4,7 +4,7 @@
 #include <wayland-client-protocol.h>
 #include <wayland-cursor.h>
 
-#include "GUIToolkitListeners.h"
+#include "GUIListeners.h"
 #include "vec2.hpp"
 #include "detail/func_packing_simd.inl"
 #include "Action.h"
@@ -16,33 +16,32 @@
 #include "xdg-shell-client-protocol.h"
 
 class Component;
-class GUIToolkit;
-class WindowW;
+class GUI;
+class WindoW;
 
 
-class GUIToolkit
+class GUI
 {
 	bool closeTrigger = false;
 
-	GUIToolkitListeners listeners {};
+	GUIListeners listeners {};
 
 public:
-	inline static constexpr int windowResizeBorder = 10;
-
-	inline static GUIToolkit* instance = nullptr;
-	inline static std::vector<WindowW*> windows {};
+	inline static GUI* instance = nullptr;
+	inline static std::vector<WindoW*> windows {};
 
 	// Hovered and focused components
-	inline static WindowW* hoveredWindow = nullptr;
+	inline static WindoW* hoveredWindow = nullptr;
 	inline static Component* hoveredComponent = nullptr;
 	inline static wl_surface* hoveredSurface = nullptr;
-	inline static WindowW* focusedWindow = nullptr;
+	inline static WindoW* focusedWindow = nullptr;
 	inline static Component* focusedComponent = nullptr;
+	inline static wl_surface* focusedSurface = nullptr;
 
 	// Mouse
 	inline static glm::vec2 mousePos;
+	inline static glm::vec2 mouseLocalPos;
 	inline static int resizeIndex;
-	inline static Action<glm::vec2> onPointerMove;
 	inline static uint32_t latestPointerEnterSerial;
 
 	// Wayland cursor
@@ -67,15 +66,26 @@ public:
     inline static EGLContext* eglContext = nullptr;
     inline static cairo_device_t* cairoDevice = nullptr;
 
+	// Events
+	inline static Action<glm::vec2> onPointerMove;
+	inline static Action<int, int> onPointerDown;
+	inline static Action<int, int> onPointerUp;
+	inline static Action<int, int> onKeyDown;
+	inline static Action<int, int> onKeyUp;
 
 
-	GUIToolkit();
-	~GUIToolkit();
+
+	GUI();
+	~GUI();
+
+	void initWayland();
+	void initCursor();
+	void initCairo();
+    void initEGL() const;
+	void initInteraction();
 
 	void loop() const;
 
-	static void initCairo();
-    void initEGL() const;
 
-    friend class GUIToolkitListeners;
+    friend class GUIListeners;
 };

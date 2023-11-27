@@ -3,7 +3,7 @@ project ("GUIToolkit")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(SOURCE_FILES "src/Component/Component.cpp" "src/xdg-shell-protocol.c" "src/main.cpp" "src/GUIToolkit.cpp" "src/GUIToolkitListeners.cpp"
+set(SOURCE_FILES "src/Component/Component.cpp" "src/xdg-shell-protocol.c" "src/main.cpp" "src/GUI.cpp" "src/GUIListeners.cpp"
 				 "include/Action.h" "src/Component/Window.cpp" "src/Component/SubComponent.cpp" "src/Utils.cpp"
 		include/Component/TextComponent.h "include/Debug.h")
 

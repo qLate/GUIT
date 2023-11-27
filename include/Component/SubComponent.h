@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 
-class WindowW;
+class WindoW;
 
 class SubComponent : public Component
 {
@@ -10,7 +10,7 @@ class SubComponent : public Component
 public:
 	Component* parent;
 
-	glm::vec2 pos;
+	glm::vec2 localPos;
 	glm::vec2 anchorsMin = {0.5f, 0.5f};
 	glm::vec2 anchorsMax = {0.5f, 0.5f};
 	glm::vec2 anchoredPos;
@@ -18,7 +18,7 @@ public:
 
 	SubComponent(Component* parent, glm::vec2 size = {100, 100});
 
-	void setPos(glm::vec2 pos);
+	void setLocalPos(glm::vec2 localPos);
 	void setAnchoredPos(glm::vec2 pos);
 	void setAnchors(glm::vec2 min, glm::vec2 max);
 	void setPivot(glm::vec2 pivot);
@@ -27,4 +27,5 @@ public:
 	void resizeRec(glm::vec2 prevContainerSize, glm::vec2 newContainerSize);
 
 	glm::vec2 getAnchorCenter() const;
+	glm::vec2 getTopLeftPos() const override;;
 };

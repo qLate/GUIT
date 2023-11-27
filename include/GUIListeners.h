@@ -1,16 +1,14 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <wayland-client-protocol.h>
 
 #include "Component.h"
 #include "xdg-shell-client-protocol.h"
 #include "Utils.h"
 
-class GUIToolkit;
+class GUI;
 
-class GUIToolkitListeners
+class GUIListeners
 {
 	wl_registry_listener registryListener = {
 		.global = registerGlobal,
@@ -53,9 +51,9 @@ class GUIToolkitListeners
 	static void keyboardKey(void* data, wl_keyboard* kb, uint32_t ser, uint32_t t, uint32_t key, uint32_t state);
 	static void pointerButton(void* data, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state);
 	static void updateResize();
-	static void pointerMove(void* data, wl_pointer* pointer, uint32_t time, wl_fixed_t surface_x, wl_fixed_t surface_y);
+	static void pointerMove(void* data, wl_pointer* pointer, uint32_t time, wl_fixed_t x, wl_fixed_t y);
 	static void pointerEnter(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y);
 	static void pointerExit(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface);
 
-	friend GUIToolkit;
+	friend GUI;
 };

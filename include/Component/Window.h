@@ -5,8 +5,12 @@
 #include "xdg-shell-client-protocol.h"
 
 
-class WindowW : public Component
+class WindoW : public Component
 {
+	inline static constexpr int resizeBorder = 10;
+	inline static constexpr int minSize = 100;
+	inline static constexpr int headerHeight = 30;
+
 	xdg_surface_listener xSurfListener {
 		.configure = configureXSurf
 	};
@@ -17,10 +21,6 @@ class WindowW : public Component
 
 	wl_callback_listener wCallbackListener {
 		.done = frameNew
-	};
-	wl_surface_listener wSurfListener = {
-		.enter = onSurfaceEnterCallback,
-		.leave = onSurfaceLeaveCallback,
 	};
 
 	xdg_toplevel* top = nullptr;
@@ -39,21 +39,25 @@ class WindowW : public Component
 	bool isFullscreen = false;
 
 public:
-	bool isMoveable = true;
 	bool isResizeable = true;
 
-	WindowW(const std::string& name, glm::vec2 size = {500, 500});
-	~WindowW() override;
+	WindoW(const std::string& name, glm::vec2 size = {500, 500});
+	~WindoW() override;
 
 	void resize(glm::vec2 size) final;
-	void update() override;
+	void draw() override;
+	void drawHeader() const;
 
 	void switchFullscreen();
 
+private:
+	static void frameNew(void* data, wl_callback* cb, uint32_t a);
 	static void configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial);
 	static void configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h_, wl_array* stat);
 	static void closeTop(void* data, xdg_toplevel* top);
 
-	friend class GUIToolkitListeners;
+
 	friend class Component;
+	friend class GUI;
+	friend class GUIListeners;
 };

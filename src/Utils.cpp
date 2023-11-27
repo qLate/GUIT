@@ -7,7 +7,7 @@
 #define  STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "Component.h"
-#include "GUIToolkit.h"
+#include "GUI.h"
 
 int32_t Utils::shm_alloc(uint64_t sz)
 {
@@ -60,9 +60,8 @@ void Utils::resizeSurface(glm::vec2 oldSize, glm::vec2 newSize, int& capacity, w
 		capacity = len_new * 2;
 		auto fd = shm_alloc(capacity);
 		pixels = (uint8_t*)mmap(nullptr, capacity, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-		pool = wl_shm_create_pool(GUIToolkit::sharedMemory, fd, capacity);
+		pool = wl_shm_create_pool(GUI::sharedMemory, fd, capacity);
 	}
 
 	buf = wl_shm_pool_create_buffer(pool, 0, (int)newSize.x, (int)newSize.y, (int)newSize.x * 4, WL_SHM_FORMAT_ABGR8888);
-	wl_surface_attach(surf, buf, 0, 0);
 }

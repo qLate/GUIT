@@ -4,25 +4,23 @@
 #include <wayland-client-protocol.h>
 #include <glm/gtx/string_cast.hpp>
 
-#include "GUIToolkit.h"
+#include "GUI.h"
 #include "SubComponent.h"
 #include "Utils.h"
 #include "Debug.h"
 
-
 Component::Component(glm::vec2 size)
 {
-	surf = wl_compositor_create_surface(GUIToolkit::compositor);
+	surf = wl_compositor_create_surface(GUI::compositor);
 	wl_surface_set_user_data(surf, this);
-	wl_surface_add_listener(surf, &surfListener, this);
 
 	surfCallback = wl_surface_frame(surf);
 	wl_callback_add_listener(surfCallback, &callbackListener, this);
 	wl_surface_commit(surf);
 
 	eWindow = wl_egl_window_create(surf, size.x, size.y);
-	eSurf = (EGLSurface*)eglCreateWindowSurface(GUIToolkit::eglDisplay, GUIToolkit::eglConfig, eWindow, nullptr);
-	cSurf = cairo_gl_surface_create_for_egl(GUIToolkit::cairoDevice, eSurf, size.x, size.y);
+	eSurf = (EGLSurface*)eglCreateWindowSurface(GUI::eglDisplay, GUI::eglConfig, eWindow, nullptr);
+	cSurf = cairo_gl_surface_create_for_egl(GUI::cairoDevice, eSurf, size.x, size.y);
 
 	updateImageData();
 }
@@ -36,7 +34,7 @@ Component::~Component()
 	cairo_surface_destroy(imageDataSurf);
 }
 
-void Component::update()
+void Component::draw()
 {
 	Debug::funcEntered(__FUNCTION__);
 	auto cr = cairo_create(cSurf);
@@ -47,9 +45,9 @@ void Component::update()
 
 	cairo_gl_surface_swapbuffers(cSurf);
 	cairo_destroy(cr);
+	wl_surface_commit(surf);
 	Debug::funcExit(__FUNCTION__);
 }
-
 void Component::resize(glm::vec2 size)
 {
 	Debug::funcEntered(__FUNCTION__);
@@ -59,8 +57,13 @@ void Component::resize(glm::vec2 size)
 		return;
 	}
 
+	eglDestroySurface(GUI::eglDisplay, eSurf);
+	cairo_surface_destroy(cSurf);
+
 	wl_egl_window_resize(eWindow, size.x, size.y, 0, 0);
-	cairo_gl_surface_set_size(cSurf, size.x, size.y);
+
+	eSurf = (EGLSurface*)eglCreateWindowSurface(GUI::eglDisplay, GUI::eglConfig, eWindow, nullptr);
+	cSurf = cairo_gl_surface_create_for_egl(GUI::cairoDevice, eSurf, size.x, size.y);
 
 	for (const auto& subComponent : subComponents)
 	{
@@ -105,23 +108,9 @@ void Component::frameNew(void* data, wl_callback* cb, uint32_t a)
 	auto component = (Component*)data;
 
 	wl_callback_destroy(cb);
-	cb = wl_surface_frame(component->surf);
-	wl_callback_add_listener(cb, &component->callbackListener, component);
+	component->surfCallback = wl_surface_frame(component->surf);
+	wl_callback_add_listener(component->surfCallback, &component->callbackListener, component);
 
-	component->update();
-	Debug::funcExit(__FUNCTION__);
-}
-void Component::onSurfaceEnterCallback(void* data, wl_surface* surface, wl_output* output)
-{
-	Debug::funcEntered(__FUNCTION__);
-	auto component = (Component*)data;
-	component->onSurfaceEnter(surface, output);
-	Debug::funcExit(__FUNCTION__);
-}
-void Component::onSurfaceLeaveCallback(void* data, wl_surface* surface, wl_output* output)
-{
-	Debug::funcEntered(__FUNCTION__);
-	auto component = (Component*)data;
-	component->onSurfaceLeave(surface, output);
+	component->draw();
 	Debug::funcExit(__FUNCTION__);
 }

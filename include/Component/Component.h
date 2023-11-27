@@ -11,17 +11,13 @@
 #include <cairo/cairo-gl.h>
 
 class SubComponent;
-class WindowW;
+class WindoW;
 
 class Component
 {
 protected:
 	wl_callback_listener callbackListener {
 		.done = frameNew
-	};
-	wl_surface_listener surfListener = {
-		.enter = onSurfaceEnterCallback,
-		.leave = onSurfaceLeaveCallback,
 	};
 
 	glm::ivec2 imageSize {1, 1};
@@ -39,31 +35,32 @@ public:
 	EGLSurface eSurf = nullptr;
 	cairo_surface_t* cSurf = nullptr;
 
+	glm::vec2 pos = {0, 0};
 	glm::vec2 size;
-	int x = 0, y = 0;
 
-	WindowW* window;
-	bool moveWindowOnDrag;
+	WindoW* window;
 
 
 	Component(glm::vec2 size);
 	virtual ~Component();
 
-	virtual void update();
-
+	virtual void draw();
 	virtual void resize(glm::vec2 size);
 
 	void updateImageData();
 	void setColor(Color color);
 	void setImage(const std::string& path);
 
-	virtual void onSurfaceEnter(wl_surface* surface, wl_output* output) {}
-	virtual void onSurfaceLeave(wl_surface* surface, wl_output* output) {}
+	virtual glm::vec2 getTopLeftPos() const { return pos; };
+
+private:
+	virtual void onPointerEnter() {}
+	virtual void onPointerExit() {}
+	virtual void onPointerDown() {}
+	virtual void onPointerUp() {}
 
 	static void frameNew(void* data, wl_callback* cb, uint32_t a);
-	static void onSurfaceEnterCallback(void* data, wl_surface* surface, wl_output* output);
-	static void onSurfaceLeaveCallback(void* data, wl_surface* surface, wl_output* output);
 
-	friend class GUIToolkitListeners;
+	friend class GUIListeners;
 	friend class Utils;
 };
