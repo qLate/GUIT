@@ -24,7 +24,7 @@ class Debug
 {
 public:
 	inline static bool loggingEnabled = true;
-	inline static LogType enabledLogTypes = LogType::Default | LogType::FunctionCalls;
+	inline static LogType enabledLogTypes = LogType::Default;
 
 	inline static int depth = 0;
 	inline static bool preventSpam = true;
@@ -49,7 +49,7 @@ public:
 			return;
 		}
 
-		for (size_t i = 0; i < depth; i++)
+		for (int i = 0; i < depth; i++)
 			std::cout << "  ";
 
 		std::stringstream stream;
@@ -73,7 +73,7 @@ public:
 
 		depth--;
 
-		for (size_t i = 0; i < depth; i++)
+		for (int i = 0; i < depth; i++)
 			std::cout << "  ";
 		std::cout << "end\n";
 

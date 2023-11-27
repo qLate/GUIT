@@ -22,7 +22,7 @@ Component::Component(glm::vec2 size)
 	eSurf = (EGLSurface*)eglCreateWindowSurface(GUI::eglDisplay, GUI::eglConfig, eWindow, nullptr);
 	cSurf = cairo_gl_surface_create_for_egl(GUI::cairoDevice, eSurf, size.x, size.y);
 
-	updateImageData();
+	updateImageSurface();
 }
 Component::~Component()
 {
@@ -37,6 +37,9 @@ Component::~Component()
 void Component::draw()
 {
 	Debug::funcEntered(__FUNCTION__);
+	if (needSizeUpdate)
+		updateSize();
+
 	auto cr = cairo_create(cSurf);
 	cairo_scale(cr, size.x / imageSize.x, size.y / imageSize.y);
 	cairo_set_source_surface(cr, imageDataSurf, 0, 0);
@@ -48,15 +51,8 @@ void Component::draw()
 	wl_surface_commit(surf);
 	Debug::funcExit(__FUNCTION__);
 }
-void Component::resize(glm::vec2 size)
+void Component::updateSize()
 {
-	Debug::funcEntered(__FUNCTION__);
-	if (this->size == size)
-	{
-		Debug::funcExit(__FUNCTION__);
-		return;
-	}
-
 	eglDestroySurface(GUI::eglDisplay, eSurf);
 	cairo_surface_destroy(cSurf);
 
@@ -64,23 +60,28 @@ void Component::resize(glm::vec2 size)
 
 	eSurf = (EGLSurface*)eglCreateWindowSurface(GUI::eglDisplay, GUI::eglConfig, eWindow, nullptr);
 	cSurf = cairo_gl_surface_create_for_egl(GUI::cairoDevice, eSurf, size.x, size.y);
+}
+void Component::resize(glm::vec2 size)
+{
+	auto finalSize = preserveAspect ? Utils::getPreservedAspect(imageSize, size) : size;
+	if (finalSize == this->size) return;
+
+	auto prevSize = this->size;
+	this->size = finalSize;
+	needSizeUpdate = true;
 
 	for (const auto& subComponent : subComponents)
 	{
-		subComponent->resizeRec(this->size, size);
+		subComponent->resizeRec(prevSize, size);
 	}
-
-	this->size = size;
-	Debug::funcExit(__FUNCTION__);
 }
 
-void Component::updateImageData()
+void Component::updateImageSurface()
 {
 	imageDataSurf = cairo_image_surface_create_for_data(imageData.data(), CAIRO_FORMAT_ARGB32, imageSize.x, imageSize.y, imageSize.x * 4);
 }
 void Component::setColor(Color color)
 {
-	Debug::funcEntered(__FUNCTION__);
 	imageSize = {1, 1};
 	imageData.resize(4);
 	imageData[0] = color.b * 255;
@@ -88,23 +89,22 @@ void Component::setColor(Color color)
 	imageData[2] = color.r * 255;
 	imageData[3] = color.a * 255;
 
-	updateImageData();
-	Debug::funcExit(__FUNCTION__);
+	updateImageSurface();
 }
 void Component::setImage(const std::string& path)
 {
-	Debug::funcEntered(__FUNCTION__);
 	int w, h;
 	Utils::readImage(imageData, path, w, h);
 	imageSize = {w, h};
 
-	updateImageData();
-	Debug::funcExit(__FUNCTION__);
+	preserveAspect = true;
+	resize(size);
+
+	updateImageSurface();
 }
 
 void Component::frameNew(void* data, wl_callback* cb, uint32_t a)
 {
-	Debug::funcEntered(__FUNCTION__);
 	auto component = (Component*)data;
 
 	wl_callback_destroy(cb);
@@ -112,5 +112,4 @@ void Component::frameNew(void* data, wl_callback* cb, uint32_t a)
 	wl_callback_add_listener(component->surfCallback, &component->callbackListener, component);
 
 	component->draw();
-	Debug::funcExit(__FUNCTION__);
 }

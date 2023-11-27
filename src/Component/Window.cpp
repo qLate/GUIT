@@ -4,6 +4,7 @@
 
 #include "Debug.h"
 #include "GUI.h"
+#include "SubComponent.h"
 #include "Utils.h"
 
 WindoW::WindoW(const std::string& name, glm::vec2 size): Component(size)
@@ -28,9 +29,17 @@ WindoW::WindoW(const std::string& name, glm::vec2 size): Component(size)
 
 	resize(size);
 	GUI::windows.push_back(this);
+
+	header = new SubComponent(this, {size.x, headerHeight}, wSurf);
+	header->setPivot({0, 0});
+	header->setLocalPos({resizeBorder, resizeBorder});
+	header->setAnchors({0, 0}, {1, 0});
+	header->setColor(Color::white());
 }
 WindoW::~WindoW()
 {
+	delete header;
+
 	std::erase(GUI::windows, this);
 
 	xdg_toplevel_destroy(top);
@@ -40,12 +49,13 @@ void WindoW::resize(glm::vec2 size)
 {
 	if (this->size == size) return;
 
+	auto prevWSize = this->wSize;
 	int w = (int)size.x + (isFullscreen ? 0 : 2 * resizeBorder);
 	int h = (int)size.y + (isFullscreen ? 0 : 2 * resizeBorder + headerHeight);
-	Utils::resizeSurface(this->wSize, {w, h}, wPixelsCapacity, wSurf, wBuf, wPixels, wPixels_pool);
-	wl_subsurface_set_position(subsurf, isFullscreen ? 0 : resizeBorder, isFullscreen ? 0 : resizeBorder + headerHeight);
-
 	this->wSize = {w, h};
+
+	Utils::resizeSurface(prevWSize, wSize, wPixelsCapacity, wSurf, wBuf, wPixels, wPixels_pool);
+	wl_subsurface_set_position(subsurf, isFullscreen ? 0 : resizeBorder, isFullscreen ? 0 : resizeBorder + headerHeight);
 
 	Component::resize(size);
 }
@@ -53,24 +63,7 @@ void WindoW::draw()
 {
 	Component::draw();
 
-	drawHeader();
-}
-void WindoW::drawHeader() const
-{
-	Debug::funcEntered(__FUNCTION__);
-	memset(wPixels, 0, wSize.x * wSize.y * 4);
-	for (int y = 0; y < headerHeight; y++)
-	{
-		for (int x = 0; x < size.x; x++)
-		{
-			int i = (y + resizeBorder) * (int)wSize.x + x + resizeBorder;
-			memset(wPixels + 4 * i, 255, 4);
-		}
-	}
-	wl_surface_attach(wSurf, wBuf, 0, 0);
-	wl_surface_damage_buffer(wSurf, 0, 0, wSize.x, resizeBorder + headerHeight + 1);
 	wl_surface_commit(wSurf);
-	Debug::funcExit(__FUNCTION__);
 }
 
 void WindoW::switchFullscreen()

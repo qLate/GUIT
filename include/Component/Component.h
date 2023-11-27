@@ -26,6 +26,7 @@ protected:
 	cairo_surface_t* imageDataSurf;
 
 public:
+	WindoW* window;
 	std::vector<SubComponent*> subComponents {};
 
 	wl_surface* surf = nullptr;
@@ -34,20 +35,21 @@ public:
 	wl_egl_window* eWindow = nullptr;
 	EGLSurface eSurf = nullptr;
 	cairo_surface_t* cSurf = nullptr;
+	bool needSizeUpdate = false;
 
 	glm::vec2 pos = {0, 0};
 	glm::vec2 size;
-
-	WindoW* window;
+	bool preserveAspect = false;
 
 
 	Component(glm::vec2 size);
 	virtual ~Component();
 
+	void updateSize();
 	virtual void draw();
 	virtual void resize(glm::vec2 size);
 
-	void updateImageData();
+	void updateImageSurface();
 	void setColor(Color color);
 	void setImage(const std::string& path);
 

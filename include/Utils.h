@@ -25,4 +25,6 @@ public:
 	static bool readImage(std::vector<uint8_t>& image, const std::filesystem::path& filename, int& w, int& h);
 
 	static void resizeSurface(glm::vec2 oldSize, glm::vec2 newSize, int& capacity, wl_surface* surf, wl_buffer*& buf, uint8_t*& pixels, wl_shm_pool*& pool);
+
+	static glm::vec2 getPreservedAspect(glm::ivec2 imageSize, glm::vec2 containerSize);
 };

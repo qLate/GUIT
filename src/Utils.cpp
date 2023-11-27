@@ -64,4 +64,15 @@ void Utils::resizeSurface(glm::vec2 oldSize, glm::vec2 newSize, int& capacity, w
 	}
 
 	buf = wl_shm_pool_create_buffer(pool, 0, (int)newSize.x, (int)newSize.y, (int)newSize.x * 4, WL_SHM_FORMAT_ABGR8888);
+	wl_surface_attach(surf, buf, 0, 0);
+}
+
+glm::vec2 Utils::getPreservedAspect(glm::ivec2 imageSize, glm::vec2 containerSize)
+{
+	double imageRatio = (float)imageSize.x / imageSize.y;
+	double containerRatio = containerSize.x / containerSize.y;
+
+	if (imageRatio > containerRatio)
+		return {containerSize.x, containerSize.x / imageRatio};
+	return {containerSize.y * imageRatio, containerSize.y};
 }

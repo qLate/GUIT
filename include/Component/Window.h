@@ -25,6 +25,7 @@ class WindoW : public Component
 
 	xdg_toplevel* top = nullptr;
 	xdg_surface* xSurf = nullptr;
+	wl_subsurface* subsurf = nullptr;
 
 	glm::vec2 wSize {};
 	wl_surface* wSurf = nullptr;
@@ -34,19 +35,17 @@ class WindoW : public Component
 	wl_shm_pool* wPixels_pool = nullptr;
 	int wPixelsCapacity = 0;
 
-	wl_subsurface* subsurf = nullptr;
-
 	bool isFullscreen = false;
 
 public:
 	bool isResizeable = true;
+	SubComponent* header;
 
 	WindoW(const std::string& name, glm::vec2 size = {500, 500});
 	~WindoW() override;
 
 	void resize(glm::vec2 size) final;
 	void draw() override;
-	void drawHeader() const;
 
 	void switchFullscreen();
 

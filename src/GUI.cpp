@@ -4,6 +4,7 @@
 #include <iostream>
 #include <linux/input-event-codes.h>
 
+#include "SubComponent.h"
 #include "Window.h"
 
 
@@ -87,7 +88,7 @@ void GUI::initInteraction()
 		{
 			xdg_toplevel_resize(focusedWindow->top, seat, serial, resizeIndex);
 		}
-		else if (hoveredSurface == hoveredWindow->wSurf &&
+		else if (hoveredSurface == hoveredWindow->header->surf &&
 			mousePos.y <= WindoW::headerHeight + WindoW::resizeBorder && mousePos.y > WindoW::resizeBorder &&
 			mousePos.x > WindoW::resizeBorder && mousePos.x < focusedWindow->wSize.x - WindoW::resizeBorder)
 		{

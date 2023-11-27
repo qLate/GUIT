@@ -16,14 +16,18 @@ public:
 	glm::vec2 anchoredPos;
 	glm::vec2 pivot = {0.5f, 0.5f};
 
-	SubComponent(Component* parent, glm::vec2 size = {100, 100});
+	glm::vec2 targetSize;
 
-	void setLocalPos(glm::vec2 localPos);
+
+	SubComponent(Component* parent, glm::vec2 size = {100, 100}, wl_surface* parentSurf = nullptr);
+
+	void setLocalPos(glm::vec2 pos);
 	void setAnchoredPos(glm::vec2 pos);
 	void setAnchors(glm::vec2 min, glm::vec2 max);
 	void setPivot(glm::vec2 pivot);
 	void updateSurfacePosition() const;
 
+	void resize(glm::vec2 size) override;
 	void resizeRec(glm::vec2 prevContainerSize, glm::vec2 newContainerSize);
 
 	glm::vec2 getAnchorCenter() const;
