@@ -24,7 +24,7 @@ class Debug
 {
 public:
 	inline static bool loggingEnabled = true;
-	inline static LogType enabledLogTypes = LogType::Default | LogType::FunctionCalls;
+	inline static LogType enabledLogTypes = LogType::Default;
 
 	inline static int depth = 0;
 	inline static bool preventSpam = true;

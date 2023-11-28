@@ -10,6 +10,8 @@
 #include <EGL/egl.h>
 #include <cairo/cairo-gl.h>
 
+#include "Action.h"
+
 class SubComponent;
 class WindoW;
 
@@ -20,10 +22,9 @@ protected:
 		.done = frameNew
 	};
 
-	glm::ivec2 imageSize {1, 1};
-	std::vector<uint8_t> imageData {255, 255, 255, 255};
-	std::vector<uint8_t> scaledImageData {255, 255, 255, 255};
-	cairo_surface_t* rSurf = nullptr;
+	bool scaleImage = false;
+	std::vector<uint8_t> imageData {};
+	glm::vec2 imageSize = {1, 1};
 
 public:
 	std::string nameID;
@@ -37,12 +38,20 @@ public:
 	wl_egl_window* eWindow = nullptr;
 	EGLSurface eSurf = nullptr;
 	cairo_surface_t* cSurf = nullptr;
+	cairo_surface_t* rSurf = nullptr;
 	bool needSurfaceResize = true;
 
 	glm::vec2 pos = {0, 0};
 	glm::vec2 size;
 	bool preserveAspect = false;
 	bool isActive = true;
+
+	Action<> OnPointerEnter {};
+	Action<> OnPointerExit {};
+	Action<> OnPointerDown {};
+	Action<> OnPointerUp {};
+	Action<> OnFocus {};
+	Action<> OnFocusLost {};
 
 
 	Component(glm::vec2 size);
@@ -53,19 +62,18 @@ public:
 
 	virtual void resize(glm::vec2 size);
 
-	void setColor(Color color);
+	virtual void setColor(Color color);
 	void setImage(const std::string& path);
-	void updateRecordSurface();
 
 	virtual glm::vec2 getTopLeftPos() const { return pos; };
 
-	void setActive(bool isActive);
-
 private:
-	virtual void onPointerEnter() {}
-	virtual void onPointerExit() {}
-	virtual void onPointerDown() {}
-	virtual void onPointerUp() {}
+	virtual void onPointerEnter();
+	virtual void onPointerExit();
+	virtual void onPointerDown();
+	virtual void onPointerUp();
+	virtual void onFocus();;
+	virtual void onFocusLost();;
 
 	static void frameNew(void* data, wl_callback* cb, uint32_t a);
 

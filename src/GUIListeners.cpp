@@ -79,11 +79,14 @@ void GUIListeners::pointerButton(void* data, wl_pointer* pointer, uint32_t seria
 	{
 		if (state == WL_POINTER_BUTTON_STATE_PRESSED)
 		{
-			// Set focused window
+			if (GUI::focusedComponent != nullptr)
+				GUI::focusedComponent->onFocusLost();
+
 			GUI::focusedWindow = GUI::hoveredWindow;
 			GUI::focusedComponent = GUI::hoveredComponent;
 			GUI::focusedSurface = GUI::hoveredSurface;
 
+			GUI::focusedComponent->onFocus();
 			GUI::focusedComponent->onPointerDown();
 		}
 		else if (state == WL_POINTER_BUTTON_STATE_RELEASED)
@@ -141,21 +144,20 @@ void GUIListeners::updateResize()
 
 void GUIListeners::pointerEnter(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y)
 {
-	auto focusedComponent = (Component*)wl_surface_get_user_data(surface);
-	GUI::hoveredWindow = focusedComponent->window;
-	GUI::hoveredComponent = focusedComponent;
+	GUI::hoveredComponent = (Component*)wl_surface_get_user_data(surface);
+	GUI::hoveredWindow = GUI::hoveredComponent->window;
 	GUI::hoveredSurface = surface;
 
-	GUI::latestPointerEnterSerial = serial;
+	GUI::hoveredComponent->onPointerEnter();
 
-	focusedComponent->onPointerEnter();
+	GUI::latestPointerEnterSerial = serial;
 }
 void GUIListeners::pointerExit(void* data, wl_pointer* pointer, uint32_t serial, wl_surface* surface)
 {
-	if (GUI::focusedComponent != nullptr)
-		GUI::focusedComponent->onPointerExit();
+	if (GUI::hoveredComponent != nullptr)
+		GUI::hoveredComponent->onPointerExit();
 
-	GUI::focusedWindow = nullptr;
-	GUI::focusedComponent = nullptr;
+	GUI::hoveredWindow = nullptr;
+	GUI::hoveredComponent = nullptr;
 	GUI::hoveredSurface = nullptr;
 }

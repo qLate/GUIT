@@ -34,6 +34,7 @@ public:
 	inline static WindoW* hoveredWindow = nullptr;
 	inline static Component* hoveredComponent = nullptr;
 	inline static wl_surface* hoveredSurface = nullptr;
+
 	inline static WindoW* focusedWindow = nullptr;
 	inline static Component* focusedComponent = nullptr;
 	inline static wl_surface* focusedSurface = nullptr;
@@ -60,11 +61,11 @@ public:
 	inline static wl_keyboard* keyboard = nullptr;
 	inline static wl_pointer* pointer = nullptr;
 
-    // EGL Cairo
-    inline static EGLDisplay* eglDisplay = nullptr;
-    inline static EGLConfig* eglConfig = nullptr;
-    inline static EGLContext* eglContext = nullptr;
-    inline static cairo_device_t* cairoDevice = nullptr;
+	// EGL Cairo
+	inline static EGLDisplay* eglDisplay = nullptr;
+	inline static EGLConfig* eglConfig = nullptr;
+	inline static EGLContext* eglContext = nullptr;
+	inline static cairo_device_t* cairoDevice = nullptr;
 
 	// Events
 	inline static Action<glm::vec2> onPointerMove;
@@ -73,6 +74,7 @@ public:
 	inline static Action<int, int> onKeyDown;
 	inline static Action<int, int> onKeyUp;
 
+	inline static bool allowSwitchFullscreen = true;
 
 
 	GUI();
@@ -81,11 +83,11 @@ public:
 	void initWayland();
 	void initCursor();
 	void initCairo();
-    void initEGL() const;
+	void initEGL() const;
 	void initInteraction();
 
 	void loop() const;
 
 
-    friend class GUIListeners;
+	friend class GUIListeners;
 };

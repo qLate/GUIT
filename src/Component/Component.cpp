@@ -8,6 +8,7 @@
 #include "SubComponent.h"
 #include "Utils.h"
 #include "Debug.h"
+#include "Window.h"
 
 Component::Component(glm::vec2 size)
 {
@@ -21,8 +22,6 @@ Component::Component(glm::vec2 size)
 	eWindow = wl_egl_window_create(surf, size.x, size.y);
 	//eSurf = (EGLSurface*)eglCreateWindowSurface(GUI::eglDisplay, GUI::eglConfig, eWindow, nullptr);
 	//cSurf = cairo_gl_surface_create_for_egl(GUI::cairoDevice, eSurf, size.x, size.y);
-
-	updateRecordSurface();
 }
 Component::~Component()
 {
@@ -45,7 +44,8 @@ void Component::draw()
 
 	auto cr = cairo_create(cSurf);
 
-	cairo_scale(cr, size.x / imageSize.x, size.y / imageSize.y);
+	if (scaleImage)
+		cairo_scale(cr, size.x / imageSize.x, size.y / imageSize.y);
 	cairo_set_source_surface(cr, rSurf, 0, 0);
 	cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 	cairo_paint(cr);
@@ -80,86 +80,44 @@ void Component::resize(glm::vec2 size)
 
 	for (const auto& subComponent : subComponents)
 	{
-		subComponent->resizeRec(prevSize, size);
+		subComponent->resizeRec(prevSize, this->size);
 	}
 }
 
 void Component::setColor(Color color)
 {
-	imageSize = {1, 1};
-	imageData.resize(4);
-	imageData[0] = color.b * 255;
-	imageData[1] = color.g * 255;
-	imageData[2] = color.r * 255;
-	imageData[3] = color.a * 255;
+	imageSize = size;
 
-	updateRecordSurface();
+	rSurf = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, nullptr);
+	auto cr = cairo_create(rSurf);
+
+	cairo_set_source_rgb(cr, color.r, color.g, color.b);
+	cairo_paint(cr);
+
+	cairo_destroy(cr);
 }
 void Component::setImage(const std::string& path)
 {
 	int w, h;
+	imageData.clear();
 	Utils::readImage(imageData, path, w, h);
 	imageSize = {w, h};
 
-	preserveAspect = true;
+	if (this != window)
+		this->preserveAspect = true;
+	this->scaleImage = true;
 	resize(size);
 
-	updateRecordSurface();
-}
-void Component::updateRecordSurface()
-{
-	if (rSurf != nullptr)
-		cairo_surface_destroy(rSurf);
-
-	auto imageSurf = cairo_image_surface_create_for_data(imageData.data(), CAIRO_FORMAT_ARGB32, imageSize.x, imageSize.y, imageSize.x * 4);
 	rSurf = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, nullptr);
+	auto imageSurf = cairo_image_surface_create_for_data(imageData.data(), CAIRO_FORMAT_ARGB32, w, h, w * 4);
 	auto cr = cairo_create(rSurf);
 
+	//cairo_scale(cr, size.x / w, size.y / h);
 	cairo_set_source_surface(cr, imageSurf, 0, 0);
 	cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 	cairo_paint(cr);
 
-	// Draw transparent squares
-	//for (int i = 1; i <= 10; i++)
-	//{
-	//	cairo_set_source_rgba(cr, 0, 1, 1, i * 0.1);
-	//	cairo_rectangle(cr, 50 * i, 20, 40, 40);
-	//	cairo_fill(cr);
-	//}
-
 	cairo_destroy(cr);
-}
-
-void Component::setActive(bool isActive)
-{
-	if (this->isActive == isActive) return;
-	this->isActive = isActive;
-
-	if (!isActive)
-	{
-		eglDestroySurface(GUI::eglDisplay, eSurf);
-		cairo_surface_destroy(cSurf);
-
-		wl_egl_window_resize(eWindow, 1, 1, 0, 0);
-
-		eSurf = (EGLSurface*)eglCreateWindowSurface(GUI::eglDisplay, GUI::eglConfig, eWindow, nullptr);
-		cSurf = cairo_gl_surface_create_for_egl(GUI::cairoDevice, eSurf, size.x, size.y);
-
-		//auto cr = cairo_create(cSurf);
-		//cairo_set_source_rgba(cr, 1, 1, 1, 1);
-		//cairo_paint(cr);
-
-		cairo_gl_surface_swapbuffers(cSurf);
-		//cairo_destroy(cr);
-	}
-	else
-	{
-		wl_egl_window_resize(eWindow, size.x, size.y, 0, 0);
-		cairo_gl_surface_set_size(cSurf, size.x, size.y);
-	}
-
-	for (const auto& subComponent : subComponents)
-		subComponent->setActive(isActive);
 }
 
 void Component::frameNew(void* data, wl_callback* cb, uint32_t a)
@@ -173,4 +131,29 @@ void Component::frameNew(void* data, wl_callback* cb, uint32_t a)
 
 	component->draw();
 	Debug::funcExit(__FUNCTION__);
+}
+
+void Component::onPointerEnter()
+{
+	OnPointerEnter();
+}
+void Component::onPointerExit()
+{
+	OnPointerExit();
+}
+void Component::onPointerDown()
+{
+	OnPointerDown();
+}
+void Component::onPointerUp()
+{
+	OnPointerUp();
+}
+void Component::onFocus()
+{
+	OnFocus();
+}
+void Component::onFocusLost()
+{
+	OnFocusLost();
 }

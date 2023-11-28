@@ -8,7 +8,8 @@ SubComponent::SubComponent(Component* parent, glm::vec2 size, wl_surface* parent
 {
 	this->window = parent->window;
 
-	subsurf = wl_subcompositor_get_subsurface(GUI::subcompositor, surf, parentSurf != nullptr ? parentSurf : parent->surf);
+	this->parentSurf = parentSurf != nullptr ? parentSurf : parent->surf;
+	subsurf = wl_subcompositor_get_subsurface(GUI::subcompositor, surf, this->parentSurf);
 	//wl_subsurface_set_desync(subsurf);
 
 	SubComponent::resize(size);
@@ -48,6 +49,7 @@ void SubComponent::setPivot(glm::vec2 pivot)
 }
 void SubComponent::updateSurfacePosition() const
 {
+	if (!isActive) return;
 	auto pivotedPos = localPos - pivot * size;
 	wl_subsurface_set_position(subsurf, (int)pivotedPos.x, (int)pivotedPos.y);
 }
@@ -66,6 +68,24 @@ void SubComponent::resizeRec(glm::vec2 prevContainerSize, glm::vec2 newContainer
 
 	this->localPos = anchoredPos + getAnchorCenter();
 	updateSurfacePosition();
+}
+
+void SubComponent::setActive(bool isActive)
+{
+	if (this->isActive == isActive) return;
+	this->isActive = isActive;
+
+	if (!isActive)
+	{
+		wl_subsurface_destroy(subsurf);
+	}
+	else
+	{
+		subsurf = wl_subcompositor_get_subsurface(GUI::subcompositor, surf, parentSurf);
+	}
+
+	for (const auto& subComponent : subComponents)
+		subComponent->setActive(isActive);
 }
 
 glm::vec2 SubComponent::getAnchorCenter() const

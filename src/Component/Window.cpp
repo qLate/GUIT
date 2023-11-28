@@ -4,6 +4,7 @@
 
 #include "Debug.h"
 #include "GUI.h"
+#include "InputField.h"
 #include "SubComponent.h"
 #include "Utils.h"
 
@@ -77,6 +78,7 @@ void WindoW::resize(glm::vec2 size)
 
 void WindoW::switchFullscreen()
 {
+	if (!GUI::allowSwitchFullscreen) return;
 	isFullscreen = !isFullscreen;
 
 	if (window->isFullscreen)
@@ -88,7 +90,6 @@ void WindoW::switchFullscreen()
 	{
 		xdg_toplevel_unset_fullscreen(window->top);
 		header->setActive(true);
-		header->draw();
 	}
 }
 
@@ -102,7 +103,6 @@ void WindoW::frameNew(void* data, wl_callback* cb, uint32_t a)
 	wl_callback_add_listener(window->wSurfCallback, &window->wCallbackListener, window);
 	wl_surface_commit(window->wSurf);
 
-	//window->draw();
 	Debug::funcExit(__FUNCTION__);
 }
 void WindoW::configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial)
@@ -112,6 +112,7 @@ void WindoW::configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial)
 	xdg_surface_ack_configure(xSurf, serial);
 
 	window->resize(window->size + (window->isFullscreen ? glm::vec2(resizeBorder * 2, resizeBorder * 2 + headerHeight) : glm::vec2()));
+	//window->draw();
 	wl_surface_commit(window->wSurf);
 	Debug::funcExit(__FUNCTION__);
 }

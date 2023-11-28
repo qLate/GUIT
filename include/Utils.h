@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <wayland-client.h>
+#include <linux/input-event-codes.h>
 
 #include "vec2.hpp"
 
@@ -27,4 +28,6 @@ public:
 	static void resizeSurface(glm::vec2 oldSize, glm::vec2 newSize, int& capacity, wl_surface* surf, wl_buffer*& buf, uint8_t*& pixels, wl_shm_pool*& pool);
 
 	static glm::vec2 getPreservedAspect(glm::ivec2 imageSize, glm::vec2 containerSize);
+
+	static char keyToChar(int keyCode);
 };

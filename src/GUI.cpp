@@ -106,5 +106,8 @@ GUI::~GUI()
 
 void GUI::loop() const
 {
-	while (wl_display_dispatch(display) && !closeTrigger) { }
+	while (wl_display_dispatch(display) && !closeTrigger)
+	{
+		
+	}
 }

@@ -9,6 +9,7 @@ class SubComponent : public Component
 public:
 	Component* parent;
 
+	wl_surface* parentSurf = nullptr;
 	wl_subsurface* subsurf = nullptr;
 
 	glm::vec2 localPos;
@@ -30,6 +31,8 @@ public:
 
 	void resize(glm::vec2 size) override;
 	void resizeRec(glm::vec2 prevContainerSize, glm::vec2 newContainerSize);
+
+	void setActive(bool isActive);
 
 	glm::vec2 getAnchorCenter() const;
 	glm::vec2 getTopLeftPos() const override;;
