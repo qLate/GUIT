@@ -5,7 +5,7 @@
 
 InputField::InputField(Component* parent, glm::vec2 size): SubComponent(parent, size)
 {
-	text = new Text("asdasd", this, size);
+	text = new Text("type me", this, size);
 	text->OnFocus += [this] { onFocus(); };
 	text->OnFocusLost += [this] { onFocusLost(); };
 

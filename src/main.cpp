@@ -9,11 +9,11 @@ int main()
 {
 	GUI toolkit {};
 
-	WindoW w1 {"Test window", {800, 800}};
+	WindoW w1 {"Test window", {700, 700}};
 	w1.setColor(Color::gray());
 	w1.nameID = "w1";
 
-	InputField i1 {&w1, {400, 100}};
+	InputField i1 {&w1, {600, 100}};
 
 	//Button b1 {"click me!", &w1, {400, 100}};
 	//b1.setColor(Color::white());

@@ -3,11 +3,8 @@
 Text::Text(const std::string& text, Component* parent, glm::vec2 size): SubComponent(parent, size)
 {
 	this->scaleImage = true;
-	Text::setColor(Color::white());
+	
 	setText(text);
-
-	preserveAspect = true;
-	Text::resize(size);
 }
 
 void Text::setText(const std::string& text, float fontSize, Color color)

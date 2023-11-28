@@ -71,7 +71,7 @@ void Component::forceUpdateSurfaces()
 void Component::resize(glm::vec2 size)
 {
 	if (!isActive) return;
-	auto finalSize = preserveAspect ? Utils::getPreservedAspect(imageSize, size) : size;
+	auto finalSize = doPreserveAspect() ? Utils::getPreservedAspect(imageSize, size) : size;
 	if (finalSize == this->size) return;
 
 	auto prevSize = this->size;

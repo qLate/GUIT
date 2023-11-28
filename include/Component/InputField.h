@@ -20,4 +20,6 @@ public:
 	void onFocusLost() override;
 
 	void onKeyDown(int key) const;
+
+	//bool doPreserveAspect() const override { return true; }
 };
