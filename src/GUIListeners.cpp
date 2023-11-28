@@ -57,16 +57,20 @@ void GUIListeners::seatName(void* data, wl_seat* seat, const char* name) {}
 
 void GUIListeners::keyboardKey(void* data, wl_keyboard* kb, uint32_t ser, uint32_t t, uint32_t key, uint32_t state)
 {
-	auto toolkit = (GUI*)data;
 	if (key == KEY_ESC)
 	{
-		toolkit->closeTrigger = true;
+		GUI::instance->closeTrigger = true;
 	}
 	else if (key == KEY_F)
 	{
 		if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
 			GUI::windows[0]->switchFullscreen();
 	}
+
+	if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
+		GUI::onKeyDown(key, ser);
+	else if (state == WL_KEYBOARD_KEY_STATE_RELEASED)
+		GUI::onKeyUp(key, ser);
 }
 void GUIListeners::pointerButton(void* data, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
 {

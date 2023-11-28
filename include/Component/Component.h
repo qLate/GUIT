@@ -23,9 +23,11 @@ protected:
 	glm::ivec2 imageSize {1, 1};
 	std::vector<uint8_t> imageData {255, 255, 255, 255};
 	std::vector<uint8_t> scaledImageData {255, 255, 255, 255};
-	cairo_surface_t* imageDataSurf;
+	cairo_surface_t* rSurf = nullptr;
 
 public:
+	std::string nameID;
+
 	WindoW* window;
 	std::vector<SubComponent*> subComponents {};
 
@@ -35,25 +37,29 @@ public:
 	wl_egl_window* eWindow = nullptr;
 	EGLSurface eSurf = nullptr;
 	cairo_surface_t* cSurf = nullptr;
-	bool needSizeUpdate = false;
+	bool needSurfaceResize = true;
 
 	glm::vec2 pos = {0, 0};
 	glm::vec2 size;
 	bool preserveAspect = false;
+	bool isActive = true;
 
 
 	Component(glm::vec2 size);
 	virtual ~Component();
 
-	void updateSize();
-	virtual void draw();
+	void draw();
+	void forceUpdateSurfaces();
+
 	virtual void resize(glm::vec2 size);
 
-	void updateImageSurface();
 	void setColor(Color color);
 	void setImage(const std::string& path);
+	void updateRecordSurface();
 
 	virtual glm::vec2 getTopLeftPos() const { return pos; };
+
+	void setActive(bool isActive);
 
 private:
 	virtual void onPointerEnter() {}

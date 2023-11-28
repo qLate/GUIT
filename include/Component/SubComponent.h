@@ -5,10 +5,11 @@ class WindoW;
 
 class SubComponent : public Component
 {
-	wl_subsurface* subsurf = nullptr;
 
 public:
 	Component* parent;
+
+	wl_subsurface* subsurf = nullptr;
 
 	glm::vec2 localPos;
 	glm::vec2 anchorsMin = {0.5f, 0.5f};

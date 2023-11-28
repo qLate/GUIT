@@ -42,10 +42,12 @@ public:
 	SubComponent* header;
 
 	WindoW(const std::string& name, glm::vec2 size = {500, 500});
+	void initSurfaces(const std::string& name);
+	void createHeader(const std::string& name);
+
 	~WindoW() override;
 
 	void resize(glm::vec2 size) final;
-	void draw() override;
 
 	void switchFullscreen();
 
@@ -54,7 +56,6 @@ private:
 	static void configureXSurf(void* data, xdg_surface* xSurf, uint32_t serial);
 	static void configureTop(void* data, xdg_toplevel* xSurf, int32_t w_, int32_t h_, wl_array* stat);
 	static void closeTop(void* data, xdg_toplevel* top);
-
 
 	friend class Component;
 	friend class GUI;

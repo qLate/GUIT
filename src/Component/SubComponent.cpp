@@ -1,6 +1,5 @@
 #include "SubComponent.h"
 
-#include "Debug.h"
 #include "GUI.h"
 #include "Window.h"
 #include "gtx/string_cast.hpp"
@@ -10,6 +9,7 @@ SubComponent::SubComponent(Component* parent, glm::vec2 size, wl_surface* parent
 	this->window = parent->window;
 
 	subsurf = wl_subcompositor_get_subsurface(GUI::subcompositor, surf, parentSurf != nullptr ? parentSurf : parent->surf);
+	//wl_subsurface_set_desync(subsurf);
 
 	SubComponent::resize(size);
 	setAnchoredPos({0, 0});
