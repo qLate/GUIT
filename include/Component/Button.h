@@ -16,6 +16,4 @@ public:
 	~Button() override;
 
 	void setColor(Color color) override;
-
-	bool doPreserveAspect() const override { return true; }
 };

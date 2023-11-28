@@ -9,7 +9,7 @@ class Text : public SubComponent
 {
 public:
 	std::string text;
-	Color bgColor = Color::white();
+	Color bgColor;
 
 	Text(const std::string& text, Component* parent, glm::vec2 size);
 
@@ -17,6 +17,4 @@ public:
 
 	void resize(glm::vec2 size) override;
 	void setColor(Color color) override;
-
-	bool doPreserveAspect() const override { return true; }
 };

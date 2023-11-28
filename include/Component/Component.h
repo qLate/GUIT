@@ -66,7 +66,6 @@ public:
 	void setImage(const std::string& path);
 
 	virtual glm::vec2 getTopLeftPos() const { return pos; };
-	virtual bool doPreserveAspect() const { return preserveAspect; };
 
 private:
 	virtual void onPointerEnter();

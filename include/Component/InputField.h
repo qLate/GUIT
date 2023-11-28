@@ -3,7 +3,7 @@
 
 class Text;
 
-class InputField : SubComponent
+class InputField : public SubComponent
 {
 public:
 	Text* text;
@@ -20,6 +20,4 @@ public:
 	void onFocusLost() override;
 
 	void onKeyDown(int key) const;
-
-	//bool doPreserveAspect() const override { return true; }
 };
