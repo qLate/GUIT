@@ -2,6 +2,7 @@
 
 #include <cstring>
 
+#include "Button.h"
 #include "Debug.h"
 #include "GUI.h"
 #include "InputField.h"
@@ -43,10 +44,44 @@ void WindoW::createHeader(const std::string& name)
 {
 	header = new SubComponent(this, {size.x, headerHeight}, wSurf);
 	header->nameID = "header";
+	header->setColor(Color::white());
 	header->setPivot({0, 0});
 	header->setLocalPos({resizeBorder, resizeBorder});
 	header->setAnchors({0, 0}, {1, 0});
-	header->setColor(Color::white());
+
+	buttonClose = new Button("", header, {headerHeight, headerHeight});
+	buttonClose->setImage("../images/close.png");
+	buttonClose->setPivot({1, 0});
+	buttonClose->setAnchors({1, 0}, {1, 0});
+	buttonClose->setLocalPos({size.x, 0});
+	buttonClose->OnClick += [this]
+	{
+		GUI::instance->closeTrigger = true;
+	};
+
+	buttonMaximize = new Button("", header, {headerHeight, headerHeight});
+	buttonMaximize->setImage("../images/maximize.png");
+	buttonMaximize->setPivot({1, 0});
+	buttonMaximize->setAnchors({1, 0}, {1, 0});
+	buttonMaximize->setLocalPos({size.x - headerHeight, 0});
+	buttonMaximize->OnClick += [this]
+	{
+		if (!isMaximized)
+			xdg_toplevel_set_maximized(top);
+		else
+			xdg_toplevel_unset_maximized(top);
+		isMaximized = !isMaximized;
+	};
+
+	buttonMinimize = new Button("", header, {headerHeight, headerHeight});
+	buttonMinimize->setImage("../images/minimize.png");
+	buttonMinimize->setPivot({1, 0});
+	buttonMinimize->setAnchors({1, 0}, {1, 0});
+	buttonMinimize->setLocalPos({size.x - 2 * headerHeight, 0});
+	buttonMinimize->OnClick += [this]
+	{
+		xdg_toplevel_set_minimized(top);
+	};
 }
 
 WindoW::~WindoW()

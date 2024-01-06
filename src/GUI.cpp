@@ -54,7 +54,7 @@ void GUI::initEGL() const
 		EGL_NONE
 	};
 
-	static const EGLint context_attributes[] = {
+	static constexpr EGLint context_attributes[] = {
 		EGL_CONTEXT_CLIENT_VERSION, 2,
 		EGL_NONE
 	};

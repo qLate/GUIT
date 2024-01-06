@@ -22,11 +22,11 @@ class WindoW;
 
 class GUI
 {
-	bool closeTrigger = false;
-
 	GUIListeners listeners {};
 
 public:
+	bool closeTrigger = false;
+
 	inline static GUI* instance = nullptr;
 	inline static std::vector<WindoW*> windows {};
 

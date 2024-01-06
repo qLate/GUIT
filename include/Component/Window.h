@@ -5,6 +5,8 @@
 #include "xdg-shell-client-protocol.h"
 
 
+class Button;
+
 class WindoW : public Component
 {
 	inline static constexpr int resizeBorder = 10;
@@ -39,7 +41,12 @@ class WindoW : public Component
 
 public:
 	bool isResizeable = true;
+	bool isMaximized;
+
 	SubComponent* header;
+	Button* buttonMinimize;
+	Button* buttonMaximize;
+	Button* buttonClose;
 
 	WindoW(const std::string& name, glm::vec2 size = {500, 500});
 	void initSurfaces(const std::string& name);

@@ -9,7 +9,7 @@ class Button : public SubComponent
 {
 
 public:
-	Text* text;
+	Text* text = nullptr;
 	Action<> OnClick {};
 
 	Button(const std::string& text, Component* parent, glm::vec2 size);
