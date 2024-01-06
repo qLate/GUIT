@@ -77,7 +77,7 @@ void setup3()
 
 int main()
 {
-	setup1();
+	setup2();
 
 	return 0;
 }
